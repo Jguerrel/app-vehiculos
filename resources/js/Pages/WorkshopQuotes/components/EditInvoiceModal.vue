@@ -7,6 +7,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import Swal from "sweetalert2";
+import ButtonDownloadInvoice from "./ButtonDownloadInvoice.vue";
 
 const props = defineProps({
     show: {
@@ -17,15 +18,15 @@ const props = defineProps({
         type: String,
         default: "3xl",
     },
-    quotation_id: {
-        type: Number,
-        default: 0,
-        description: "Id de la cotización realizada",
-    },
     chassis_number: {
         type: String,
         default: "",
         description: "Número de chasis del vehiculo",
+    },
+    quotation: {
+        type: Object,
+        default: {},
+        description: "objeto de la cotización realizada",
     },
 });
 
@@ -40,6 +41,7 @@ const form = useForm({
     quotation_id: "",
     invoice_number: "",
     invoice: "",
+    path: "",
 });
 
 /**
@@ -61,20 +63,22 @@ const validateAndLoadInvoice = (e) => {
         // limpiar el input y el form
         e.target.value = "";
         form.reset("invoice", null);
+        form.path = props.quotation.invoice_path;
 
         return;
     }
 
     form.invoice = file;
+    form.path = "";
 };
 
 /**
- * Guardar la factura
+ * actualizar la factura
  */
-const saveInvoice = () => {
+const updateInvoice = () => {
     loading.value = true;
 
-    form.post(route("workshop_quotes.saveInvoice"), {
+    form.post(route("workshop_quotes.updateInvoice"), {
         onSuccess: () => {
             loading.value = false;
             clearForm();
@@ -90,6 +94,7 @@ const saveInvoice = () => {
 const clearForm = () => {
     form.reset("invoice_number", null);
     form.reset("invoice", null);
+    form.reset("path", null);
 };
 
 // cuando este activo la modal
@@ -97,7 +102,9 @@ watch(
     () => props.show,
     (value) => {
         if (value) {
-            form.quotation_id = props.quotation_id;
+            form.quotation_id = props.quotation.id;
+            form.invoice_number = props.quotation.invoice_number;
+            form.path = props.quotation.invoice_path;
         }
     }
 );
@@ -107,12 +114,12 @@ watch(
         <div class="p-4">
             <div class="flex justify-between items-center">
                 <h3 class="text-gray-900 text-xl font-bold pb-3">
-                    Facturación
+                    Actualizar datos de facturación
                 </h3>
                 <PrimaryButton
                     @click="$emit('close')"
                     type="button"
-                    class="inline-flex items-center px-3 rounded-full  text-sm font-medium text-white bg-red-800 hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-900 transition ease-in-out duration-150"
+                    class="inline-flex items-center px-3 rounded-full text-sm font-medium text-white bg-red-800 hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-900 transition ease-in-out duration-150"
                 >
                     <i class="fa fa-times"></i>
                 </PrimaryButton>
@@ -147,12 +154,24 @@ watch(
                             :message="form.errors.invoice_number"
                         />
                     </div>
-                    <div class="">
+                    <div class="flex flex-col gap-3">
                         <InputLabel
                             for="invoice"
                             value="Cargar factura"
                             class="font-bold text-lg"
                         />
+                        <div
+                            v-if="form.path && !form.invoice"
+                            class="flex flex-col gap-1"
+                        >
+                            <label for="">
+                                Factura actual: {{ form.path }}
+                            </label>
+                            <ButtonDownloadInvoice
+                                :invoice="form.path"
+                                class="w-12"
+                            />
+                        </div>
                         <label class="block border rounded">
                             <span class="sr-only"> Cargar factura </span>
                             <input
@@ -162,6 +181,10 @@ watch(
                                 class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-200 file:text-blue-700 hover:file:bg-blue-300"
                                 required
                             />
+                            <span class="text-sm text-orange-600">
+                                si carga una nueva factura, la anterior será
+                                eliminada
+                            </span>
                         </label>
                         <InputError
                             class="mt-2"
@@ -172,11 +195,11 @@ watch(
             </div>
             <div class="flex justify-end pt-5 gap-3">
                 <PrimaryButton
-                    @click.stop="saveInvoice"
+                    @click.stop="updateInvoice"
                     type="button"
                     class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition ease-in-out duration-150"
                 >
-                    Guardar datos
+                    Actualizar datos
                 </PrimaryButton>
                 <PrimaryButton
                     @click="$emit('close')"

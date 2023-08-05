@@ -211,7 +211,7 @@ props.order.subcategories.forEach((sub) => {
                                         <p
                                             class="text-right p-3 text-sm md:text-lg"
                                         >
-                                            <b>Impuesto</b>
+                                            <b>ITBMS</b>
                                             <span
                                                 class="bg-gray-100 p-3 rounded"
                                             >

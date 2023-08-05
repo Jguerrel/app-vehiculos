@@ -1,4 +1,8 @@
-<h2>Vehiculos</h2>
+<h2>Reporte Vehiculos</h2>
+<p>
+    <b>{{ date('d-m-Y h:i a') }}</b>
+</p>
+<br>
 <table>
     <thead class="border-b">
         <tr>
@@ -8,7 +12,6 @@
             <th class="text-center font-bold py-3" colspan="3">
                 Monto Reparación
             </th>
-
         </tr>
     </thead>
     <thead class="border-b">
@@ -46,25 +49,25 @@
                     {{ $v['chassis_number'] }}
                 </td>
                 <td class="text-center py-3 text-sm md:text-lg">
-                    {{  $v['brand'] ?? '---' }}
+                    {{ $v['brand'] ?? '---' }}
                 </td>
                 <td class="text-center py-3 text-sm md:text-lg">
-                    {{  $v['model'] ?? '---' }}
+                    {{ $v['model'] ?? '---' }}
                 </td>
                 <td class="text-center py-3 text-sm md:text-lg">
-                    {{  $v['user'] }}
+                    {{ $v['user'] }}
                 </td>
                 <td class="text-center py-3 text-sm md:text-lg">
-                    {{  $v['status_last_order'] }}
+                    {{ $v['status_last_order'] }}
                 </td>
                 <td class="text-center py-3 text-sm md:text-lg">
-                    ${{  number_format($v['dock'],2,',','.') }}
+                    ${{ number_format($v['dock'], 2, ',', '.') }}
                 </td>
                 <td class="text-center py-3 text-sm md:text-lg">
-                    ${{  number_format($v['warranty'],2,',','.') }}
+                    ${{ number_format($v['warranty'], 2, ',', '.') }}
                 </td>
                 <td class="text-center py-3 text-sm md:text-lg">
-                    ${{  number_format($v['total'],2,',','.') }}
+                    ${{ number_format($v['total'], 2, ',', '.') }}
                 </td>
             </tr>
         @endforeach
@@ -78,13 +81,13 @@
                 Total
             </td>
             <td class="text-center font-bold py-3">
-                ${{ number_format($vehicles->sum('dock'),2,',','.') }}
+                ${{ number_format($vehicles->sum('dock'), 2, ',', '.') }}
             </td>
             <td class="text-center font-bold py-3">
-                ${{ number_format($vehicles->sum('warranty'),2,',','.') }}
+                ${{ number_format($vehicles->sum('warranty'), 2, ',', '.') }}
             </td>
             <td class="text-center font-bold py-3">
-                ${{ number_format($vehicles->sum('total'),2,',','.') }}
+                ${{ number_format($vehicles->sum('total'), 2, ',', '.') }}
             </td>
         </tr>
 </table>

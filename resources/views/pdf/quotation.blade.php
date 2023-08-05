@@ -72,7 +72,7 @@
                 @if ($quota->iva)
                     <div>
                         <p class="text-right text-sm">
-                            <span class="font-weight-bold"><b>Impuesto</b></span>
+                            <span class="font-weight-bold"><b>ITBMS</b></span>
                             <span class="bg-light p-3 rounded">
                                 {{ $quota->iva ? $quota->iva . '%' : '---' }}
                             </span>

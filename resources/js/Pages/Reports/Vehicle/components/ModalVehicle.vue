@@ -54,7 +54,7 @@
                         <th scope="col" class="px-6 py-3">Status</th>
                         <th scope="col" class="px-6 py-3">Fecha</th>
                         <th scope="col" class="px-6 py-3">Sub Total</th>
-                        <th scope="col" class="px-6 py-3">IVA</th>
+                        <th scope="col" class="px-6 py-3">ITBMS</th>
                         <th scope="col" class="px-6 py-3">Total</th>
                         <th scope="col" class="px-6 py-3">Factura</th>
                     </tr>

@@ -2,55 +2,65 @@
 @section('content')
     <br>
     <div class="w-100">
-        <div class="bg-info text-white p-2 rounded text-center text-uppercase"
-            style="padding-top: 1rem; padding-bottom: 1rem;padding-left: 1rem;text-align: left;">
-            <b>Reporte Vehiculo - {{ $vehicle->chassis_number }} </b>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-xs-4">
-                <img src="{{ config('storage.vehicle.resize_pp') . $vehicle->main_image }}" class="img-rounded" width="250px"
-                    height="180px" />
+        <div class="bg-info text-white p-2 text-uppercase"
+            style="padding-top: 1rem; padding-bottom: 1rem;">
+            <div class="text-left col-xs-6" style="margin-top: 4px;">
+                <p>
+                    <b>Reporte Vehiculos - {{ $vehicle->chassis_number }}</b>
+                </p>
             </div>
-            <div class="col-xs-8">
-                <div>
-                    <table class="w-auto">
-                        <tr>
-                            <td>
-                                <span class="font-weight-bold text-uppercase"> <b>Nº chasis</b> </span>
-                                <p class="text-sm bg-light p-2 rounded">
-                                    {{ $vehicle->chassis_number }}
-                                </p>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div>
-                    <table class="w-auto">
-                        <tr>
-                            <td>
-                                <span class="font-weight-bold text-uppercase"> <b>Marca</b> </span>
-                                <p class="text-sm bg-light p-2 rounded">
-                                    {{ $vehicle->brand->name }}
-                                </p>
-                            </td>
-                            <td style="padding-left: 10px;">
-                                <span class="font-weight-bold text-uppercase"> <b>Modelo</b> </span>
-                                <p class="text-sm bg-light p-2 rounded">
-                                    {{ $vehicle->model->name }}
-                                </p>
-                            </td>
-                            <td style="padding-left: 10px;">
-                                <span class="font-weight-bold text-uppercase"> <b>Color</b> </span>
-                                <p class="text-sm bg-light p-2 rounded">
-                                    {{ $vehicle->color->name }}
-                                </p>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+            <div class="text-right" style="padding-right: 1rem; margin-top: 4px;">
+                <p>
+                    <b>{{ date('d-m-Y h:i a') }}</b>
+                </p>
             </div>
         </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-xs-4">
+            <img src="{{ config('storage.vehicle.resize_pp') . $vehicle->main_image }}" class="img-rounded" width="250px"
+                height="180px" />
+        </div>
+        <div class="col-xs-8">
+            <div>
+                <table class="w-auto">
+                    <tr>
+                        <td>
+                            <span class="font-weight-bold text-uppercase"> <b>Nº chasis</b> </span>
+                            <p class="text-sm bg-light p-2 rounded">
+                                {{ $vehicle->chassis_number }}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <table class="w-auto">
+                    <tr>
+                        <td>
+                            <span class="font-weight-bold text-uppercase"> <b>Marca</b> </span>
+                            <p class="text-sm bg-light p-2 rounded">
+                                {{ $vehicle->brand->name }}
+                            </p>
+                        </td>
+                        <td style="padding-left: 10px;">
+                            <span class="font-weight-bold text-uppercase"> <b>Modelo</b> </span>
+                            <p class="text-sm bg-light p-2 rounded">
+                                {{ $vehicle->model->name }}
+                            </p>
+                        </td>
+                        <td style="padding-left: 10px;">
+                            <span class="font-weight-bold text-uppercase"> <b>Color</b> </span>
+                            <p class="text-sm bg-light p-2 rounded">
+                                {{ $vehicle->color->name }}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
     </div>
     <br>
     <br>
@@ -76,7 +86,7 @@
                             Subtotal
                         </th>
                         <th class="text-center font-bold py-3">
-                            IVA
+                            ITBMS
                         </th>
                         <th class="text-center font-bold py-3">
                             TOTAL

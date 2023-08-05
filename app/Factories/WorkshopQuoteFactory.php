@@ -254,6 +254,46 @@ class WorkshopQuoteFactory
   }
 
   /**
+   * Actualizar una factura relacionada con la cotización
+   *
+   * @param array $data
+   * @return bool|null
+   */
+  public function updateInvoice(array $data): ?bool
+  {
+    $trans = DB::transaction(function () use ($data) {
+      $quotation = Quotation::find($data['quotation_id']);
+      $data['invoice_path'] = $quotation->invoice_path;
+      // dd($data);
+
+      if ($data['invoice']) {
+        $file = $data['invoice'];
+
+        if (!$file->isValid() || !$quotation) {
+          return false;
+        }
+
+        // eliminar la anterior
+        $path = config('storage.invoices.storage_path');
+        $this->deleteFile($data['invoice_path'], $path);
+
+        // guardar factura
+        $name = $this->generateName('invoice_');
+        $data['invoice_path'] = $this->saveFile($file, $name, $path);
+      }
+
+      $quotation->update([
+        'invoice_number' => $data['invoice_number'],
+        'invoice_path' => $data['invoice_path'],
+      ]);
+
+      return true;
+    });
+
+    return $trans;
+  }
+
+  /**
    * Notificar al registrador y supervisor
    * que una orden de reparación fue cotizada
    *

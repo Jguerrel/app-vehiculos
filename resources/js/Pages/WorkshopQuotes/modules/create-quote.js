@@ -15,7 +15,7 @@ export const form = useForm({
 });
 
 /**
- * Iva default 7%
+ * ITBMS default 7%
  */
 export const tax = ref(7);
 export const taxString = computed(() => `${tax.value}%`);
@@ -123,7 +123,7 @@ export const clearForm = () => {
 };
 
 /**
- * Incluir o no impuesto
+ * Incluir o no ITBMS
  */
 export const includeTax = ref(false);
 

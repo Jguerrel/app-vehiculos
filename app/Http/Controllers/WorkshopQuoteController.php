@@ -8,6 +8,7 @@ use App\Factories\WorkshopQuoteFactory;
 use App\Http\Requests\ApproveQuotationRequest;
 use App\Http\Requests\CreateInvoiceRequest;
 use App\Http\Requests\CreateWorkshopQuoteRequest;
+use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\Quotation;
 use App\Models\WorkshopQuote;
 use Illuminate\Http\Request;
@@ -120,7 +121,28 @@ class WorkshopQuoteController extends Controller
 
         return redirect()
             ->route('workshop_quotes.index')
-            ->with('error', 'No se pudo crear guardar los datos de facturación');
+            ->with('error', 'No se pudo guardar los datos de facturación');
+    }
+
+    /**
+     * Guarda los datos de una factura relacionada con una cotización
+     *
+     * @param  UpdateInvoiceRequest  $request
+     * @return RedirectResponse
+     */
+    public function updateInvoice(UpdateInvoiceRequest $request): RedirectResponse
+    {
+        $quota = $this->factory->updateInvoice($request->validated());
+
+        if ($quota) {
+            return redirect()
+                ->route('workshop_quotes.index')
+                ->with('success', 'Datos de facturación actualizados con éxito');
+        }
+
+        return redirect()
+            ->route('workshop_quotes.index')
+            ->with('error', 'No se pudo actualizar los datos de facturación');
     }
 
     /**

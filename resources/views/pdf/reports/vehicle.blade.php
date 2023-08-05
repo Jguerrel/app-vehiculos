@@ -2,9 +2,19 @@
 @section('content')
     <br>
     <div class="w-100">
-        <div class="bg-info text-white p-2 rounded text-center text-uppercase" style="padding-top: 1rem; padding-bottom: 1rem;">
-            <b>Reporte Vehiculos</b>
+        <div class="bg-info text-uppercase" style="padding-top: 1rem; padding-bottom: 0.5rem;">
+            <div class="text-white text-left col-xs-6">
+                <p>
+                    <b>Reporte Vehiculos</b>
+                </p>
+            </div>
+            <div class="text-right text-white" style="padding-right: 1rem;">
+                <p>
+                    <b>{{ date('d-m-Y h:i a') }}</b>
+                </p>
+            </div>
         </div>
+
         <div class="w-100">
             <table class="table table-bordered">
                 <thead class="border-b">
@@ -54,25 +64,25 @@
                                 {{ $v['chassis_number'] }}
                             </td>
                             <td class="text-center py-3 text-sm md:text-lg">
-                                {{  $v['brand'] ?? '---' }}
+                                {{ $v['brand'] ?? '---' }}
                             </td>
                             <td class="text-center py-3 text-sm md:text-lg">
-                                {{  $v['model'] ?? '---' }}
+                                {{ $v['model'] ?? '---' }}
                             </td>
                             <td class="text-center py-3 text-sm md:text-lg">
-                                {{  $v['user']  }}
+                                {{ $v['user'] }}
                             </td>
                             <td class="text-center py-3 text-sm md:text-lg">
-                                {{  $v['status_last_order'] }}
+                                {{ $v['status_last_order'] }}
                             </td>
                             <td class="text-center py-3 text-sm md:text-lg">
-                                ${{  number_format($v['dock'],2,',','.') }}
+                                ${{ number_format($v['dock'], 2, ',', '.') }}
                             </td>
                             <td class="text-center py-3 text-sm md:text-lg">
-                                ${{  number_format($v['warranty'],2,',','.') }}
+                                ${{ number_format($v['warranty'], 2, ',', '.') }}
                             </td>
                             <td class="text-center py-3 text-sm md:text-lg">
-                                ${{  number_format($v['total'],2,',','.') }}
+                                ${{ number_format($v['total'], 2, ',', '.') }}
                             </td>
                         </tr>
                     @endforeach
@@ -83,13 +93,13 @@
                             Total
                         </td>
                         <td class="text-center font-bold py-3">
-                            ${{ number_format($vehicles->sum('dock'),2,',','.') }}
+                            ${{ number_format($vehicles->sum('dock'), 2, ',', '.') }}
                         </td>
                         <td class="text-center font-bold py-3">
-                            ${{ number_format($vehicles->sum('warranty'),2,',','.') }}
+                            ${{ number_format($vehicles->sum('warranty'), 2, ',', '.') }}
                         </td>
                         <td class="text-center font-bold py-3">
-                            ${{ number_format($vehicles->sum('total'),2,',','.') }}
+                            ${{ number_format($vehicles->sum('total'), 2, ',', '.') }}
                         </td>
                     </tr>
             </table>

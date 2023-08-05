@@ -10,7 +10,7 @@ use App\Traits\UtilsLogs;
 
 class Quotation extends Model
 {
-    use LogsActivity,UtilsLogs;
+    use LogsActivity, UtilsLogs;
 
     protected $table = 'quotations';
     protected $fillable = [
@@ -28,8 +28,8 @@ class Quotation extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->setDescriptionForEvent(fn(string $eventName) => "Cotización :  {$this->eventName($eventName)}")
-        ->useLogName('Cotización');
+            ->setDescriptionForEvent(fn (string $eventName) => "Cotización :  {$this->eventName($eventName)}")
+            ->useLogName('Cotización');
     }
 
     public function tapActivity(Activity $activity, string $eventName)

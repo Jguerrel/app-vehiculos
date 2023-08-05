@@ -1,13 +1,14 @@
 <script setup>
-import { manageError } from "@/Utils/Common/common";
-import { Link, useForm } from "@inertiajs/inertia-vue3";
-import { ref } from "vue";
-import Swal from "sweetalert2/dist/sweetalert2";
+import { Link } from "@inertiajs/inertia-vue3";
 import ButtonDownloadQuotation from "./ButtonDownloadQuotation.vue";
 import ButtonDownloadInvoice from "./ButtonDownloadInvoice.vue";
 import ButtonAddInvoice from "./ButtonAddInvoice.vue";
 import AddInvoiceModal from "./AddInvoiceModal.vue";
 import ButtonEditQuotation from "./ButtonEditQuotation.vue";
+import useStatusOrder from "@/Pages/WorkshopQuotes/modules/useStatusOrder";
+import ButtonEditInvoice from "./ButtonEditInvoice.vue";
+import EditInvoiceModal from "./EditInvoiceModal.vue";
+import TooltipButton from "./TooltipButton.vue";
 
 const props = defineProps({
     status: Number,
@@ -15,72 +16,15 @@ const props = defineProps({
     order: Object,
 });
 
-const showModalInvoice = ref(false);
-const quotation_id = ref(0);
-
-const startRepair = () => {
-    Swal.fire({
-        title: "¿Estás seguro?",
-        text: "¡No podrás revertir esto!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "¡Sí, iniciar reparación!",
-        cancelButtonText: "No, Cancelar",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const form = useForm({ order_id: props.id });
-
-            form.post(route("workshop_quotes.startRepair"), {
-                onSuccess: () => {
-                    Swal.fire(
-                        "¡Reparación iniciada!",
-                        "La reparación ha sido iniciada.",
-                        "success"
-                    );
-                },
-                onError: () => manageError(),
-            });
-        }
-    });
-};
-
-const finishRepair = () => {
-    Swal.fire({
-        title: "¿Estás seguro?",
-        text: "¡No podrás revertir esto!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "¡Sí, finalizar reparación!",
-        cancelButtonText: "No, Cancelar",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const form = useForm({ order_id: props.id });
-
-            form.post(route("workshop_quotes.finishRepair"), {
-                onSuccess: () => {
-                    Swal.fire(
-                        "¡Reparación Finalizada!",
-                        "La reparación ha sido finalizada. se le notificará al usuario.",
-                        "success"
-                    );
-                },
-                onError: () => manageError(),
-            });
-        }
-    });
-};
-
-/**
- * Abrir modal para agregar factura
- */
-const openModal = (id) => {
-    showModalInvoice.value = true;
-    quotation_id.value = id;
-};
+const {
+    showModalInvoice,
+    showEditModalInvoice,
+    quotation_id,
+    startRepair,
+    finishRepair,
+    openModal,
+    openEditModalInvoice,
+} = useStatusOrder(props);
 </script>
 <template>
     <AddInvoiceModal
@@ -89,8 +33,14 @@ const openModal = (id) => {
         :chassis_number="order.vehicle?.chassis_number"
         @close="showModalInvoice = false"
     />
+    <EditInvoiceModal
+        :show="showEditModalInvoice"
+        :quotation="order.quotation"
+        :chassis_number="order.vehicle?.chassis_number"
+        @close="showEditModalInvoice = false"
+    />
 
-    <div class="text-center w-4/5">
+    <div class="text-center">
         <!-- por cotizar - abierta -->
         <div v-if="status === $page.props.status.repair_order.open">
             <Link
@@ -108,19 +58,25 @@ const openModal = (id) => {
                 Reparación cotizada
             </p>
 
-            <div class="flex flex-col justify-center items-center">
+            <div class="flex justify-center items-stretch gap-1">
                 <ButtonDownloadQuotation :id="order.quotation.id" />
-
                 <ButtonDownloadInvoice
                     :invoice="order.quotation.invoice_path"
                     v-if="order.quotation.invoice_path"
                 />
                 <ButtonAddInvoice
                     :quotation="order.quotation"
-                    @openModalInvoice="openModal"
+                    @openModalInvoice="openModal(order.quotation.id)"
                     v-if="!order.quotation.invoice_path"
                 />
                 <ButtonEditQuotation :id="order.quotation.id" />
+                <ButtonEditInvoice
+                    :quotation="order.quotation"
+                    @openEditModalInvoice="
+                        openEditModalInvoice(order.quotation.id)
+                    "
+                    v-if="order.quotation.invoice_path"
+                />
             </div>
         </div>
 
@@ -130,15 +86,13 @@ const openModal = (id) => {
                 Cotización aprobada
             </p>
 
-            <div class="flex flex-col items-center justify-center">
+            <div class="flex justify-center items-stretch gap-1">
                 <button
-                    class="hover:no-underline bg-purple-100 hover:bg-purple-300 text-purple-600 hover:text-purple-900 inline-flex items-center justify-center gap-2 px-3 py-2 w-full"
-                    @click="startRepair"
+                    class="hover:no-underline bg-purple-200 hover:bg-purple-300 text-purple-600 hover:text-purple-900 inline-flex items-center justify-center gap-2 px-3 py-2 w-full group relative"
+                    @click="startRepair()"
                 >
                     <i class="fas fa-arrow-right"></i>
-                    <span class="text-xs font-semibold">
-                        Iniciar reparación
-                    </span>
+                    <TooltipButton text="Iniciar reparación" />
                 </button>
                 <ButtonDownloadQuotation :id="order.quotation.id" />
                 <ButtonDownloadInvoice
@@ -147,8 +101,16 @@ const openModal = (id) => {
                 />
                 <ButtonAddInvoice
                     :quotation="order.quotation"
-                    @openModalInvoice="openModal"
+                    @openModalInvoice="openModal(order.quotation.id)"
                     v-if="!order.quotation.invoice_path"
+                />
+                <ButtonEditQuotation :id="order.quotation.id" />
+                <ButtonEditInvoice
+                    :quotation="order.quotation"
+                    @openEditModalInvoice="
+                        openEditModalInvoice(order.quotation.id)
+                    "
+                    v-if="order.quotation.invoice_path"
                 />
             </div>
         </div>
@@ -159,13 +121,13 @@ const openModal = (id) => {
                 En reparación
             </p>
 
-            <div class="flex flex-col items-center justify-center">
+            <div class="flex justify-center items-stretch gap-1">
                 <button
-                    class="hover:no-underline bg-yellow-100 hover:bg-yellow-300 text-yellow-600 hover:text-yellow-900 inline-flex items-center justify-center gap-2 px-3 py-2 w-full"
-                    @click="finishRepair"
+                    class="hover:no-underline bg-teal-200 hover:bg-teal-300 text-teal-600 hover:text-teal-900 inline-flex items-center justify-center gap-2 px-3 py-2 w-full group relative"
+                    @click="finishRepair()"
                 >
                     <i class="fas fa-arrow-right"></i>
-                    <span class="text-xs font-semibold"> Finalizar rep. </span>
+                    <TooltipButton text="Finalizar reparación" />
                 </button>
                 <ButtonDownloadQuotation :id="order.quotation.id" />
                 <ButtonDownloadInvoice
@@ -174,8 +136,16 @@ const openModal = (id) => {
                 />
                 <ButtonAddInvoice
                     :quotation="order.quotation"
-                    @openModalInvoice="openModal"
+                    @openModalInvoice="openModal(order.quotation.id)"
                     v-if="!order.quotation.invoice_path"
+                />
+                <ButtonEditQuotation :id="order.quotation.id" />
+                <ButtonEditInvoice
+                    :quotation="order.quotation"
+                    @openEditModalInvoice="
+                        openEditModalInvoice(order.quotation.id)
+                    "
+                    v-if="order.quotation.invoice_path"
                 />
             </div>
         </div>
@@ -193,17 +163,24 @@ const openModal = (id) => {
                 Vehiculo reparado
             </p>
 
-            <div class="flex flex-col items-center justify-center">
+            <div class="flex justify-center items-stretch gap-1">
                 <ButtonDownloadQuotation :id="order.quotation.id" />
-
                 <ButtonDownloadInvoice
                     :invoice="order.quotation.invoice_path"
                     v-if="order.quotation.invoice_path"
                 />
+
                 <ButtonAddInvoice
                     :quotation="order.quotation"
-                    @openModalInvoice="openModal"
+                    @openModalInvoice="openModal(order.quotation.id)"
                     v-if="!order.quotation.invoice_path"
+                />
+                <ButtonEditInvoice
+                    :quotation="order.quotation"
+                    @openEditModalInvoice="
+                        openEditModalInvoice(order.quotation.id)
+                    "
+                    v-if="order.quotation.invoice_path"
                 />
             </div>
         </div>
@@ -217,17 +194,24 @@ const openModal = (id) => {
                 Caso finalizado
             </p>
 
-            <div class="flex flex-col items-center justify-center">
+            <div class="flex justify-center items-stretch gap-1">
                 <ButtonDownloadQuotation :id="order.quotation.id" />
-
                 <ButtonDownloadInvoice
                     :invoice="order.quotation.invoice_path"
                     v-if="order.quotation.invoice_path"
                 />
+
                 <ButtonAddInvoice
                     :quotation="order.quotation"
-                    @openModalInvoice="openModal"
+                    @openModalInvoice="openModal(order.quotation.id)"
                     v-if="!order.quotation.invoice_path"
+                />
+                <ButtonEditInvoice
+                    :quotation="order.quotation"
+                    @openEditModalInvoice="
+                        openEditModalInvoice(order.quotation.id)
+                    "
+                    v-if="order.quotation.invoice_path"
                 />
             </div>
         </div>
