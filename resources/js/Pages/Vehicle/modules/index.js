@@ -121,3 +121,13 @@ export const format = (date) => {
 export const pathImage = (image) => {
     return `${pp.resizeImgVehicle.value + image}`;
 };
+
+/**
+ * format date
+ */
+export const formatPickerDate = (date) => {
+    const dateFormated = new Date(date);
+    return `${dateFormated.getDate()}/${
+        dateFormated.getMonth() + 1
+    }/${dateFormated.getFullYear()}`;
+};

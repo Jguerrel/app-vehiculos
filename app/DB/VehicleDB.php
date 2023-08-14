@@ -72,7 +72,6 @@ class VehicleDB
     $existsStatus = isset($request['status']);
     $existsDateFrom = isset($request['date_from']);
     $existsDateTo = isset($request['date_to']);
-    // $data = $this->getVehiclesWithRelations()->statusFinished();
     $data = $this->getVehiclesWithRelations();
 
     // si hay que filtrar por status
@@ -92,12 +91,14 @@ class VehicleDB
     }
 
     // si es un super admin, devolver todos los vehículos
-    if ($user->isSuperAdmin()) {
-      return $data->statusFinished()->get();
-    }
+    // if ($user->isSuperAdmin()) {
+    //   return $data->statusFinished()->get();
+    // }
 
     // si no devolver los vehículos del usuario
-    return $data->statusFinished()->where('user_id', $user->id)->get();
+    // return $data->statusFinished()->where('user_id', $user->id)->get();
+
+    return $data->statusFinished()->get();
   }
 
   /**

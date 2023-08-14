@@ -22,6 +22,7 @@ import {
     form,
     format,
     pathImage,
+    formatPickerDate,
 } from "./modules/index";
 
 defineProps({ vehicles: Array });
