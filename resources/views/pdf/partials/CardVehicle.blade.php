@@ -1,7 +1,9 @@
 <div class="row">
-    <div class="col-xs-4">
-        <img src="{{ $path . $gallery[0]['path'] }}" class="img-rounded" width="260px" height="180px" />
-    </div>
+    @if ($gallery)
+        <div class="col-xs-4">
+            <img src="{{ $path . $gallery[0]['path'] }}" class="img-rounded" width="260px" height="180px" />
+        </div>
+    @endif
     <div class="col-xs-8">
         <div>
             <table class="table table-bordered" style="width: 428px;">

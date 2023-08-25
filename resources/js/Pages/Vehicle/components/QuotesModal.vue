@@ -164,11 +164,23 @@ const finalizedCase = () => {
                                     </span>
                                     {{ order.quotation?.invoice_number }}
                                 </p>
+                                <p v-if="order.quotation?.number">
+                                    <span class="font-bold text-gray-900">
+                                        Nº de cotización:
+                                    </span>
+                                    {{ order.quotation?.number }}
+                                </p>
                                 <p class="flex justify-start gap-3">
                                     <span class="font-bold text-gray-900">
                                         Status:
                                     </span>
                                     <SpanStatusOrder :order="order" />
+                                </p>
+                                <p class="flex justify-start gap-3" v-if="order.purchase_order?.number">
+                                    <span class="font-bold text-gray-900">
+                                        Orden de compra:
+                                    </span>
+                                    {{ order.purchase_order?.number ?? 'Sin orden de compra' }}
                                 </p>
                                 <p v-if="allowApprove(order)" class="py-2">
                                     <button

@@ -84,7 +84,7 @@ const filter = ref({
                                     <img
                                         :src="
                                             pp.resizeImgVehicle.value +
-                                            data.vehicle.gallery[0]?.path
+                                            data.vehicle?.gallery[0]?.path
                                         "
                                         class="w-full md:w-28 h-20 rounded"
                                     />
@@ -106,22 +106,30 @@ const filter = ref({
                                 :sortable="true"
                             ></Column>
                             <Column
-                                field="vehicle.color.name"
-                                header="Color"
-                                :sortable="true"
-                            ></Column>
-                            <Column
                                 field="quotation.created_at"
                                 header="Fecha de cotización"
                                 :sortable="true"
                             >
                                 <template #body="{ data }">
                                     <span v-if="data.quotation">
-                                        {{ formatDate(data.quotation.created_at) }}
+                                        {{
+                                            formatDate(
+                                                data.quotation.created_at
+                                            )
+                                        }}
                                     </span>
                                     <span v-else class="text-orange-700">
                                         No cotizada
                                     </span>
+                                </template>
+                            </Column>
+                            <Column
+                                field="purchase_order.number"
+                                header="Orden de compra"
+                                :sortable="true"
+                            >
+                                <template #body="{ data }">
+                                    {{ data.purchase_order?.number ?? "---" }}
                                 </template>
                             </Column>
                             <Column

@@ -50,6 +50,7 @@ class WorkshopQuoteFactory
 
       // crear cotización
       $quotation = Quotation::create([
+        'number' => $data['number'],
         'repair_order_id' => $data['repair_order_id'],
         'user_id' => $user->id,
         'subtotal' => $subtotal,
@@ -95,6 +96,7 @@ class WorkshopQuoteFactory
 
       // actualizar cotización
       $updated = $quotation->update([
+        'number' => $data['number'],
         'subtotal' => $subtotal,
         'iva' => $data['tax'],
         'total' => $total,

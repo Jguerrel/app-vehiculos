@@ -17,6 +17,7 @@ import {
     includeTax,
     validateFormat,
     loadCosts,
+    loading
 } from "./modules/create-quote";
 
 const props = defineProps({ quotation: Object });
@@ -24,6 +25,7 @@ const order = ref(props.quotation.repair_order);
 const iva = ref(props.quotation.iva);
 
 includeTax.value = iva.value > 0; // si hay que calcular o no iva
+form.number = props.quotation.number; // numero de cotización
 loadCosts(order); // inyecta costos
 </script>
 <template>
@@ -61,16 +63,50 @@ loadCosts(order); // inyecta costos
                     </div>
                     <div class="w-full">
                         <div
-                            class="bg-amber-600 text-white p-4 rounded text-center uppercase"
+                            class="bg-amber-600 text-white p-4 rounded text-center uppercase font-bold"
                         >
                             Cotización
                         </div>
                         <div class="py-5 w-full">
-                            <table class="min-w-full border">
-                                <thead class="border-b">
+                            <!-- numero de cotización -->
+                            <div
+                                class="flex flex-row justify-between items-center pb-5 border-turquesa"
+                            >
+                                <div class="w-1/2">
+                                    <p
+                                        class="text-indigo-800 font-bold text-center text-lg"
+                                    >
+                                        Nº de cotización
+                                    </p>
+                                </div>
+                                <div class="w-1/2 flex flex-col">
+                                    <input
+                                        type="text"
+                                        v-model="form.number"
+                                        placeholder="xxxxxx"
+                                        class="w-full border border-indigo-500 rounded-md shadow-sm focus:border-indigo-800 focus:ring focus:ring-indigo-800 focus:ring-opacity-50"
+                                        id="number_quote"
+                                    />
+                                    <InputError
+                                        class="mt-2"
+                                        :message="form.errors.number"
+                                    />
+                                </div>
+                            </div>
+                            <table class="min-w-full border border-gray-300">
+                                <caption
+                                    class="py-3 border-x border-t border-gray-300"
+                                >
+                                    <h5
+                                        class="text-center text-zinc-800 font-bold text-2xl"
+                                    >
+                                        Desglose de items
+                                    </h5>
+                                </caption>
+                                <thead class="border-b border-gray-300">
                                     <tr>
                                         <th class="text-center font-bold py-3">
-                                            Items
+                                            Item
                                         </th>
                                         <th class="text-center font-bold py-3">
                                             Costo
@@ -81,6 +117,7 @@ loadCosts(order); // inyecta costos
                                     <tr
                                         v-for="(sub, index) in form.subs"
                                         :key="sub.id"
+                                        class="border-b border-gray-300"
                                     >
                                         <td
                                             class="text-center py-3 text-sm md:text-lg"
@@ -193,8 +230,9 @@ loadCosts(order); // inyecta costos
                                     type="button"
                                     class="px-7 py-4 text-lg uppercase"
                                     :class="{ 'opacity-50': hasZero }"
-                                    :disabled="hasZero"
+                                    :disabled="hasZero || loading"
                                     @click.stop="updateQuote(quotation.id)"
+                                    :icon="'fas fa-save'"
                                 >
                                     Actualizar cotización
                                 </PrimaryButton>

@@ -12,6 +12,7 @@ export const form = useForm({
     tax: 0,
     total: 0,
     repair_order_id: 0,
+    number: "",
 });
 
 /**
@@ -19,6 +20,9 @@ export const form = useForm({
  */
 export const tax = ref(7);
 export const taxString = computed(() => `${tax.value}%`);
+
+// loading
+export const loading = ref(false);
 
 /**
  * subtotal
@@ -104,6 +108,7 @@ export const updateQuote = (id) => {
         return;
     }
 
+    loading.value = true;
     form.subtotal = parseFloat(subtotal.value);
     form.tax = includeTax.value ? tax.value : 0;
     form.total = parseFloat(total.value);
@@ -120,6 +125,8 @@ export const clearForm = () => {
     form.reset("tax", 0);
     form.reset("total", 0);
     form.reset("repair_order_id", 0);
+    form.reset("number", "");
+    loading.value = false;
 };
 
 /**

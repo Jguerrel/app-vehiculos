@@ -23,23 +23,33 @@
         <div class="py-2">
             @include('pdf.partials.CardVehicle', [
                 'vehicle' => $quota->repairOrder->vehicle,
-                'gallery' => $quota->repairOrder->vehicle->gallery,
+                'gallery' => $quota->repairOrder?->vehicle?->gallery ?? [],
                 'path' => config('storage.vehicle.resize_pp'),
             ])
         </div>
     </div>
     <br>
     <div>
-        <div class="bg-info text-white p-2 rounded text-center text-uppercase"
-            style="padding-top: 1rem; padding-bottom: 1rem;">
+        <div class="bg-info p-2 rounded text-center text-uppercase" style="padding-top: 1rem; padding-bottom: 1rem;">
             <b>Cotización</b>
         </div>
         <div class="w-100">
+            <div style="padding-top: 1.5rem; padding-left: 10px;">
+                <p>
+                    <b>Nº de cotización:</b>
+                    <span>{{ $quota->number ?? '(no posee)' }}</span>
+                </p>
+            </div>
             <table class="table table-bordered">
+                <caption>
+                    <h4 class="text-center font-bold text-2xl">
+                        <strong>Desglose de items</strong>
+                    </h4>
+                </caption>
                 <thead class="border-b">
                     <tr>
                         <th class="text-left font-bold py-3">
-                            Items
+                            Item
                         </th>
                         <th class="text-center font-bold py-3">
                             Costo
