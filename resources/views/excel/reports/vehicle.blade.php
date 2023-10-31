@@ -31,6 +31,9 @@
             <th class="text-center font-bold py-3">
                 Status de Reparación
             </th>
+             <th class="text-center font-bold py-3">
+                Fecha de Creacion de Orden de Reparacion
+            </th>
             <th class="text-center font-bold py-3">
                 Muelle
             </th>
@@ -60,6 +63,17 @@
                 <td class="text-center py-3 text-sm md:text-lg">
                     {{ $v['status_last_order'] }}
                 </td>
+                @if($v['repair_orders']->count()>0)
+					 @foreach ($v['repair_orders'] as $t )
+					   <td class="text-center py-3 text-sm md:text-lg">
+					    	{{ $t['date'] }} 
+					   </td>
+					@endforeach
+				@else
+				      <td class="text-center py-3 text-sm md:text-lg">
+					    	sin fecha
+					   </td>
+                @endif			
                 <td class="text-center py-3 text-sm md:text-lg">
                     ${{ number_format($v['dock'], 2, ',', '.') }}
                 </td>
