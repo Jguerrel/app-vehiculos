@@ -84,8 +84,9 @@ loadCosts(order); // inyecta costos
                                         type="text"
                                         v-model="form.number"
                                         placeholder="xxxxxx"
-                                        class="w-full border border-indigo-500 rounded-md shadow-sm focus:border-indigo-800 focus:ring focus:ring-indigo-800 focus:ring-opacity-50"
+                                        class="w-full border bg-gray-200 border-indigo-500 rounded-md shadow-sm focus:border-indigo-800 focus:ring focus:ring-indigo-800 focus:ring-opacity-50 cursor-not-allowed"
                                         id="number_quote"
+                                        readonly
                                     />
                                     <InputError
                                         class="mt-2"

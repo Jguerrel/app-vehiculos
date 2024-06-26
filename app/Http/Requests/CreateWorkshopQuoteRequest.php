@@ -31,7 +31,7 @@ class CreateWorkshopQuoteRequest extends FormRequest
             'tax' => 'required|numeric',
             'total' => 'required|numeric',
             'subs' => 'required|array|min:1',
-            'number' => 'required|string',
+            'number' => 'required|numeric|min_digits:4|max_digits:15',
         ];
     }
 
@@ -57,7 +57,10 @@ class CreateWorkshopQuoteRequest extends FormRequest
             'subs.array' => 'Los servicios deben ser un arreglo',
             'subs.min' => 'Los servicios deben tener al menos un servicio',
             'number.required' => 'El número de cotización es requerido',
-            'number.string' => 'El número de cotización debe ser una cadena de texto',
+            // 'number.string' => 'El número de cotización debe ser una cadena de texto',
+            'number.numeric' => 'El número de cotización debe ser un número',
+            'number.min_digits' => 'El número de cotización no puede tener menos de 4 caracteres',
+            'number.max_digits' => 'El número de cotización no puede tener más de 15 caracteres',
         ];
     }
 }

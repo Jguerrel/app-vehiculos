@@ -277,3 +277,22 @@ export const deleteOrder = (index) => {
     // eliminar la orden
     form.orders.splice(index, 1);
 };
+
+// editar items por si el usuario selecciono algo por error
+export const editItems = () => {
+    continueRepair.value = false;
+    const orders = form.orders;
+
+    // agregar las subcategorias a las categorias
+    orders.forEach((order) => {
+        const subs = order.subs;
+        subs.forEach((sub) => {
+            form.categories.map((obj) => {
+                obj.sub_ids.push(sub);
+            });
+        });
+    });
+
+    // eliminar las ordenes
+    form.orders = [];
+};

@@ -64,7 +64,6 @@ onMounted(() => {
                         v-model="form.company"
                         required
                         autofocus
-                        readonly
                     />
                     <InputError class="mt-2" :message="form.errors.company" />
                 </div>
@@ -77,7 +76,6 @@ onMounted(() => {
                         v-model="form.brand_id"
                         required
                         autofocus
-                        readonly
                     />
                     <InputError class="mt-2" :message="form.errors.brand_id" />
                 </div>
@@ -90,7 +88,6 @@ onMounted(() => {
                         v-model="form.model_id"
                         required
                         autofocus
-                        readonly
                     />
                     <InputError class="mt-2" :message="form.errors.model_id" />
                 </div>
@@ -103,7 +100,6 @@ onMounted(() => {
                         v-model="form.color_id"
                         required
                         autofocus
-                        readonly
                     />
                     <InputError class="mt-2" :message="form.errors.color_id" />
                 </div>

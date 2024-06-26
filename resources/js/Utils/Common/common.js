@@ -80,3 +80,8 @@ export const formatDate = (date) => {
 export const refreshPage = () => {
     window.location.reload();
 };
+
+// generar un numero random de 12 dígitos único
+export const generateRandomNumber = () => {
+    return Math.floor(Math.random() * 1000000000000);
+};

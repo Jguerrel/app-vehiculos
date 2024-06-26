@@ -20,6 +20,7 @@ import {
     deleteOrder,
     clearForm,
     canFinish,
+    editItems,
 } from "../modules/repair";
 import { onMounted } from "vue";
 import ProgressBar from "@/Components/ProgressBar.vue";
@@ -359,36 +360,41 @@ onMounted(() => {
             <!-- botonera -->
             <div class="py-5">
                 <ProgressBar :form="form" class="animate-fade-in-down mb-2" />
-                <PrimaryButton
-                    class="w-full md:w-1/2 flex justify-center"
-                    @click.stop="continueRepair = true"
-                    :class="{
-                        'opacity-25': !form.categories.length,
-                    }"
-                    :disabled="form.processing || !form.categories.length"
-                    v-if="!continueRepair"
+                <div
+                    class="flex flex-col md:flex-row items-center justify-start gap-3"
                 >
-                    <span class="px-6 py-3 uppercase"> Continuar </span>
-                </PrimaryButton>
-                <!-- <PrimaryButton
-                    class="w-full md:w-1/2 flex justify-center mb-3 bg-blue-600 hover:bg-blue-700"
-                    type="button"
-                    v-if="continueRepair"
-                    @click.stop="continueRepair = false"
-                >
-                    <span class="px-6 py-3 uppercase"> Volver a opciones </span>
-                </PrimaryButton> -->
-                <PrimaryButton
-                    class="w-full md:w-1/2 flex justify-center"
-                    :class="{ 'opacity-25': canFinish }"
-                    :disabled="canFinish"
-                    :type="form.processing ? 'button' : 'submit'"
-                    v-if="continueRepair"
-                >
-                    <span class="px-6 py-3 uppercase">
-                        FInalizar ordenes de reparación
-                    </span>
-                </PrimaryButton>
+                    <PrimaryButton
+                        class="w-full md:w-auto flex justify-center"
+                        @click.stop="continueRepair = true"
+                        :class="{
+                            'opacity-25': !form.categories.length,
+                        }"
+                        :disabled="form.processing || !form.categories.length"
+                        v-if="!continueRepair"
+                    >
+                        <span class="px-6 py-3 uppercase"> Continuar </span>
+                    </PrimaryButton>
+                    <PrimaryButton
+                        class="w-full md:w-auto text-gray-800 bg-gray-200 hover:bg-gray-300"
+                        type="button"
+                        v-if="continueRepair"
+                        :disabled="form.processing"
+                        @click.stop="editItems"
+                    >
+                        <span class="px-6 py-3"> Editar items </span>
+                    </PrimaryButton>
+                    <PrimaryButton
+                        class="w-full md:w-auto flex justify-center"
+                        :class="{ 'opacity-25': canFinish }"
+                        :disabled="canFinish"
+                        :type="form.processing ? 'button' : 'submit'"
+                        v-if="continueRepair"
+                    >
+                        <span class="px-6 py-3">
+                            FInalizar ordenes de reparación
+                        </span>
+                    </PrimaryButton>
+                </div>
             </div>
         </div>
     </form>

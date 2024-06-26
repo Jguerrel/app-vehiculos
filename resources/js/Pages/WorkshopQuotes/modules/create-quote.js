@@ -1,6 +1,6 @@
 import { useForm } from "@inertiajs/inertia-vue3";
 import { computed, ref } from "vue";
-import { manageError } from "@/Utils/Common/common";
+import { generateRandomNumber, manageError } from "@/Utils/Common/common";
 import Swal from "sweetalert2";
 
 /**
@@ -12,7 +12,7 @@ export const form = useForm({
     tax: 0,
     total: 0,
     repair_order_id: 0,
-    number: "",
+    number: generateRandomNumber(),
 });
 
 /**

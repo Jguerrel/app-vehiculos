@@ -64,16 +64,12 @@ class VehicleController extends Controller
         // guardar vehículo
         $vehicle = $this->vehicleF->createVehicle($request->validated());
 
-        if (!$vehicle) {
-            return Redirect::back()->with('error', 'El vehículo ya fue registrado.');
-        }
-
         // guardar imagenes
         $this->vehicleF->saveGallery($vehicle, $request->gallery);
 
         // devolver un json con el vehículo creado
         // pasar los datos del vehículo
-        return Redirect::route('vehicle.repair', ['id' => $vehicle->id])
+        return to_route('vehicle.repair', ['id' => $vehicle->id])
             ->with('success', 'Vehículo creado correctamente, ya puedes solicitar una reparación.');
     }
 

@@ -29,15 +29,6 @@ class VehicleFactory
    */
   public function createVehicle(array $data): ?Vehicle
   {
-
-    // buscar primero si existe el vehiculo
-    $vehicle = Vehicle::where('chassis_number', $data['chassis_number'])->first();
-
-    // si existe, retornar el vehiculo
-    if ($vehicle) {
-      return null;
-    }
-
     // verificar si existen
     $brand = Brand::where('name', $data['brand_id'])->first();
     $model = ModelVehicle::where('name', $data['model_id'])->first();
