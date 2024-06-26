@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Utils\AppStorage;
 use App\Utils\IntervationImage;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -158,10 +159,11 @@ class VehicleFactory
             'dock' => isset($sub['dock']) ? $sub['dock'] : false,
           ]);
         }
-
-        // notificar a los usuarios del taller
-        $this->notifyUsersNewOrderHasBeenCreated($order['workshop_id'], $newOrder);
       }
+      // notificar a los usuarios del taller
+      // no obligatorio
+      $this->notifyUsersNewOrderHasBeenCreated($order['workshop_id'], $newOrder);
+
 
       // cambia el estado del vehículo a solicitud de reparación enviada
       $vehicle = Vehicle::find($data['vehicle_id']);
@@ -188,9 +190,14 @@ class VehicleFactory
 
     // iterar
     // tomar el email y notificar via email
-    $workshopUsers->each(function ($userF) use ($order) {
-      $email = new NotifySupplierUserEmail($order);
-      Mail::to($userF->email)->send($email);
-    });
+    try {
+      $workshopUsers->each(function ($userF) use ($order) {
+        $email = new NotifySupplierUserEmail($order);
+        Mail::to($userF->email)->send($email);
+      });
+    } catch (Exception  $e) {
+      //$e
+      // no hacer nada
+    }
   }
 }

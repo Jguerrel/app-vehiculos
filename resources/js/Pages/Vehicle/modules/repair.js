@@ -40,7 +40,7 @@ export const clearForm = () => {
 // formulario de reparación
 export const saveRepair = () => {
     form.post(route("vehicle.store.repair"), {
-        onStart: () => console.log("start"),
+        onStart: () => console.log("start inicio"),
         onFinish: () => console.log("finish"),
         onError: (error) => console.log(error),
         onSuccess: (resp) => clearForm(),

@@ -20,7 +20,7 @@
     @inertiaHead
 
     {{--  fav icon  --}}
-    <link rel="shortcut icon" href="{{ Vite::asset('resources/img/favicon/favicon-16x16.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ Vite::asset('resources/img/favicon/favicon-16x16.png') }}" type="image/x-icon">
 
     {{--  banner e iconos  --}}
     <meta name="banner-app" content="{{ Vite::asset('resources/img/app/banner.webp') }}">
