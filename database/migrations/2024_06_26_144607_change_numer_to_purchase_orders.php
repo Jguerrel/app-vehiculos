@@ -14,11 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('purchase_orders', function (Blueprint $table) {
-            $table->dropColumn('number');
-        });
-
-        Schema::table('purchase_orders', function (Blueprint $table) {
-            $table->string('number', 100)->nullable()->after('id');
+            $table->dropUnique(['number']);
         });
     }
 
@@ -30,11 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('purchase_orders', function (Blueprint $table) {
-            $table->dropColumn('number');
-        });
-
-        Schema::table('purchase_orders', function (Blueprint $table) {
-            $table->integer('number')->nullable()->after('id');
+            $table->string('number', 255)->unique()->change();
         });
     }
 };
