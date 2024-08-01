@@ -1,9 +1,9 @@
 <script setup>
 import Modal from "@/Components/Modal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import InputPurchaseOrder from "@/Pages/Vehicle/partials/InputPurchaseOrder.vue";
 import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import InputText from "primevue/inputtext";
-import { computed, ref, onMounted } from "vue";
+import { computed, ref } from "vue";
 import SpanStatusOrder from "./SpanStatusOrder.vue";
 import { manageError } from "@/Utils/Common/common";
 
@@ -40,6 +40,16 @@ const form = useForm({
 const orders = computed(() => props.vehicle.repair_orders);
 
 /**
+ * si se debe aplicar order de compra garantia
+ */
+const hasWarrantyOrder = (order) =>
+    order.subcategories?.some((sub) => sub?.pivot?.warranty);
+/**
+ * si se debe aplicar order de compra gastos
+ */
+const hasExpensesOrder = (order) =>
+    order.subcategories?.some((sub) => sub?.pivot?.dock);
+/**
  * Mostrar o no el PDF de cotización según el status
  *
  * @param {Object} order        Orden de reparación
@@ -67,7 +77,7 @@ const allowApprove = (order) => {
  * Verificar si todas las ordenes han sido reparadas
  */
 const allRepaired = computed(() => {
-    return orders   .value.every((order) => {
+    return orders.value.every((order) => {
         return (
             order.status === usePage().props.value.status.repair_order.repaired
         );
@@ -78,32 +88,10 @@ const allRepaired = computed(() => {
  * Verificar si el vehiculo tiene estado finalizado
  */
 const vehicleFinalized = computed(() => {
-    return props.vehicle.status === usePage().props.value.status.vehicle.finalized;
+    return (
+        props.vehicle.status === usePage().props.value.status.vehicle.finalized
+    );
 });
-
-/**
- * Aprobar o no la cotización
- */
-const approveOrder = (order) => {
-    if (!order.order_number || !order.quotation.id) {
-        manageError({
-            text: "Debe ingresar el número de orden de compra",
-        });
-        return;
-    }
-
-    loading.value = true;
-    form.number = order.order_number;
-    form.quotation_id = order.quotation.id;
-    form.order_id = order.id;
-
-    // enviar formulario
-    form.post(route("workshop_quotes.approveQuotation"), {
-        onError: (error) => manageError(),
-        onSuccess: (resp) => emit("close"),
-        onFinish: () => loading.value = false,
-    });
-};
 
 /**
  * Finalizar el caso y actualizar el status del vehiculo
@@ -114,8 +102,16 @@ const finalizedCase = () => {
     form.post(route("workshop_quotes.finalizedCase"), {
         onError: (error) => manageError(),
         onSuccess: (resp) => emit("close"),
-        onFinish: () => loading.value = false,
+        onFinish: () => (loading.value = false),
     });
+};
+
+/**
+ * Orden creada con éxito
+ */
+const purchaseOrderSuccess = (order) => {
+    order.showPurchaseOrder = false;
+    emit("close");
 };
 </script>
 <template>
@@ -131,12 +127,20 @@ const finalizedCase = () => {
                 </PrimaryButton>
             </div>
             <div class="w-full">
-                <div class="flex flex-col md:flex-row  md:justify-between items-center">
+                <div
+                    class="flex flex-col md:flex-row md:justify-between items-center"
+                >
                     <h1 class="uppercase text-zinc-900 font-bold pb-2">
-                        Ordenes <span class="font-light">({{ vehicle.repair_orders_count }})</span>
+                        Ordenes
+                        <span class="font-light"
+                            >({{ vehicle.repair_orders_count }})</span
+                        >
                     </h1>
                     <h3 class="uppercase text-zinc-900 font-bold pb-2">
-                        Nº Chasis: <span class="font-light">{{ vehicle.chassis_number }}</span>
+                        Nº Chasis:
+                        <span class="font-light">{{
+                            vehicle.chassis_number
+                        }}</span>
                     </h3>
                 </div>
                 <hr />
@@ -176,17 +180,37 @@ const finalizedCase = () => {
                                     </span>
                                     <SpanStatusOrder :order="order" />
                                 </p>
-                                <p class="flex justify-start gap-3" v-if="order.purchase_order?.number">
-                                    <span class="font-bold text-gray-900">
-                                        Orden de compra:
-                                    </span>
-                                    {{ order.purchase_order?.number ?? 'Sin orden de compra' }}
-                                </p>
+                                <div v-if="order.purchase_order">
+                                    <p class="flex justify-start gap-3">
+                                        <span class="font-bold text-gray-900">
+                                            Orden de compra (garantia):
+                                        </span>
+                                        {{
+                                            hasWarrantyOrder(order)
+                                                ? order.purchase_order
+                                                      ?.order_number_warranty
+                                                : "N/A"
+                                        }}
+                                    </p>
+                                    <p class="flex justify-start gap-3">
+                                        <span class="font-bold text-gray-900">
+                                            Orden de compra (gastos):
+                                        </span>
+                                        {{
+                                            hasExpensesOrder(order)
+                                                ? order.purchase_order
+                                                      ?.order_number_expenses
+                                                : "N/A"
+                                        }}
+                                    </p>
+                                </div>
                                 <p v-if="allowApprove(order)" class="py-2">
                                     <button
                                         type="button"
                                         class="inline-flex items-center text-gray-900 bg-blue-400 hover:bg-blue-800 hover:text-white px-4 py-2 rounded-md transition ease-in-out duration-150"
-                                        @click.stop="order.showPurchaseOrder = true"
+                                        @click.stop="
+                                            order.showPurchaseOrder = true
+                                        "
                                         v-if="!order.showPurchaseOrder"
                                     >
                                         <span class="font-medium text-sm">
@@ -194,43 +218,24 @@ const finalizedCase = () => {
                                         </span>
                                     </button>
 
-                                    <div v-if="order.showPurchaseOrder" class="border border-turquesa p-3 rounded-lg animate-fade-in-down">
-                                        <label :for="'order_number' + order.id" class="font-bold text-blue-800">
-                                            Ingrese la orden de compra
-                                        </label>
-                                        <p>
-                                            <InputText v-model="order.order_number" :id="'order_number' + order.id" required/>
-                                        </p>
-
-                                        <div class="py-2 flex gap-3">
-                                            <button
-                                                type="button"
-                                                class="inline-flex items-center text-gray-900 bg-blue-400 hover:bg-blue-800 hover:text-white px-4 py-2 rounded-md transition ease-in-out duration-150"
-                                                :class="{
-                                                    'opacity-50 cursor-not-allowed': !order.order_number || loading,
-                                                }"
-                                                @click.stop="approveOrder(order)"
-                                                :disabled="!order.order_number || loading"
-                                            >
-                                                <span class="font-medium text-sm">
-                                                    Aprobar
-                                                </span>
-                                            </button>
-                                            <button
-                                                type="button"
-                                                class="inline-flex items-center text-gray-900 bg-red-400 hover:bg-red-800 hover:text-white px-4 py-2 rounded-md transition ease-in-out duration-150"
-                                                @click.stop="order.showPurchaseOrder = false"
-                                                :disabled="loading"
-                                            >
-                                                <span class="font-medium text-sm">
-                                                    Cancelar
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </div>
+                                    <InputPurchaseOrder
+                                        v-if="order.showPurchaseOrder"
+                                        :order="order"
+                                        @closepurchaseorder="
+                                            order.showPurchaseOrder = false
+                                        "
+                                        @orderaddsuccess="
+                                            purchaseOrderSuccess(order)
+                                        "
+                                    />
                                 </p>
                             </div>
-                            <div v-if="showPdf(order) && !order.showPurchaseOrder" class="flex flex-col gap-2">
+                            <div
+                                v-if="
+                                    showPdf(order) && !order.showPurchaseOrder
+                                "
+                                class="flex flex-col gap-2"
+                            >
                                 <a
                                     :href="
                                         route(
@@ -243,27 +248,37 @@ const finalizedCase = () => {
                                     noopener="true"
                                     v-if="order.quotation?.id"
                                 >
-                                    <span class="text-gray-900 text-xs font-semibold">Cotización</span>
-                                    <i
-                                        class="fas fa-file-pdf text-red-600"
-                                    ></i>
+                                    <span
+                                        class="text-gray-900 text-xs font-semibold"
+                                        >Cotización</span
+                                    >
+                                    <i class="fas fa-file-pdf text-red-600"></i>
                                 </a>
                                 <a
-                                    :href="$page.props.path.invoices.pp + order.quotation?.invoice_path"
+                                    :href="
+                                        $page.props.path.invoices.pp +
+                                        order.quotation?.invoice_path
+                                    "
                                     class="rounded bg-red-600 hover:bg-red-800 inline-flex items-center justify-between gap-2 px-3 py-1.5"
                                     target="_blank"
                                     noopener="true"
                                     :download="order.quotation?.invoice_path"
                                     v-if="order.quotation?.invoice_path"
                                 >
-                                    <span class="text-white text-xs font-semibold">Factura</span>
+                                    <span
+                                        class="text-white text-xs font-semibold"
+                                        >Factura</span
+                                    >
                                     <i class="fas fa-file-pdf text-white"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="w-full pt-2 flex justify-end" v-if="allRepaired && !vehicleFinalized">
+                <div
+                    class="w-full pt-2 flex justify-end"
+                    v-if="allRepaired && !vehicleFinalized"
+                >
                     <PrimaryButton
                         @click="finalizedCase"
                         type="button"
@@ -276,7 +291,10 @@ const finalizedCase = () => {
                         Finalizar caso
                     </PrimaryButton>
                 </div>
-                <div class="w-full pt-2 flex justify-end" v-if="vehicleFinalized">
+                <div
+                    class="w-full pt-2 flex justify-end"
+                    v-if="vehicleFinalized"
+                >
                     <div>
                         <p class="text-sm text-gray-500">
                             El caso ha sido finalizado

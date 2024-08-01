@@ -6,6 +6,8 @@ import { usePage } from "@inertiajs/inertia-vue3";
 import { computed } from "vue";
 import Swal from "sweetalert2";
 
+let consecutive = 1;
+
 // año en curso
 export const currentYear = new Date().getFullYear();
 
@@ -62,7 +64,7 @@ export const manageError = ({
     icon = "error",
     title = "Aviso!",
     text = "Ha ocurrido un error inesperado, intente mas tarde",
-}) => {
+} = {}) => {
     return Swal.fire({ icon, title, text });
 };
 
@@ -77,11 +79,31 @@ export const formatDate = (date) => {
 };
 
 // refrescar pagina actual
-export const refreshPage = () => {
-    window.location.reload();
-};
+export const refreshPage = () => globalThis.location.reload();
 
 // generar un numero random de 12 dígitos único
 export const generateRandomNumber = () => {
     return Math.floor(Math.random() * 1000000000000);
+};
+
+export const generateConsecutiveNumberWithDate = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+
+    const result = `${year}${month < 10 ? "0" + month : month}${
+        day < 10 ? "0" + day : day
+    }${hours < 10 ? "0" + hours : hours}${
+        minutes < 10 ? "0" + minutes : minutes
+    }${seconds < 10 ? "0" + seconds : seconds}${consecutive
+        .toString()
+        .padStart(1, "0")}`;
+
+    consecutive++; // Incrementamos el correlativo para el siguiente número
+
+    return result;
 };

@@ -1,7 +1,7 @@
 import { useForm } from "@inertiajs/inertia-vue3";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
+import { currentDateTime } from "@/Utils/Common/common";
 import Swal from "sweetalert2";
-import { currentDate, currentDateTime } from "@/Utils/Common/common";
 
 export const form = useForm({
     // cargar el id del vehículo desde el parámetro recibido
@@ -22,9 +22,12 @@ export const form = useForm({
 
 // backup de categorias
 export const catBackup = ref([]);
-
 // continuar con el registro de la reparación
 export const continueRepair = ref(false);
+// item a buscar en el array de items
+export const itemToSearch = ref(null);
+// items de reparación
+export const _categories = ref([]);
 
 // limpiar los datos del formulario
 // cuando se inicializa el componente
@@ -39,11 +42,21 @@ export const clearForm = () => {
 
 // formulario de reparación
 export const saveRepair = () => {
-    form.post(route("vehicle.store.repair"), {
-        onStart: () => console.log("start inicio"),
-        onFinish: () => console.log("finish"),
-        onError: (error) => console.log(error),
-        onSuccess: (resp) => clearForm(),
+    Swal.fire({
+        title: "¿Seguro desea crear las ordenes de reparación?",
+        showCancelButton: true,
+        confirmButtonText: "Si, crear orden(es)",
+        cancelButtonText: "Cancelar y volver",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // guardar
+            form.post(route("vehicle.store.repair"), {
+                onStart: () => console.log("start inicio"),
+                onFinish: () => console.log("finish"),
+                onError: (error) => console.log(error),
+                onSuccess: (resp) => clearForm(),
+            });
+        }
     });
 };
 
@@ -295,4 +308,49 @@ export const editItems = () => {
 
     // eliminar las ordenes
     form.orders = [];
+};
+
+// buscar un item en el array de items
+export const searchItem = (categories) => {
+    // detalles
+    const details = document.querySelectorAll("details");
+    // verificar
+    if (!itemToSearch.value) {
+        _categories.value = categories;
+        // cerrar detalles
+        details.forEach((item) => (item.open = false));
+    } else {
+        // palabra a buscar
+        const word = itemToSearch.value.toUpperCase();
+        const data = categories.map((item) => {
+            const sub = item.repair_subcategories.filter((subcat) =>
+                subcat.name.toUpperCase().includes(word)
+            );
+
+            return { ...item, repair_subcategories: sub };
+        });
+
+        // actualizar las _categories
+        _categories.value = data;
+        // abrir los detalles
+        details.forEach((item) => (item.open = true));
+    }
+
+    // evaluar checks
+    setTimeout(() => {
+        // desmarcar todos
+        const inputs = document.querySelectorAll("input[type=checkbox]");
+        inputs.forEach((input) => (input.checked = false));
+
+        // volver a marcar los items
+        form.categories.forEach((item) => {
+            item.sub_ids.forEach((subcat) => {
+                const type = subcat?.dock ? "dock" : "warranty";
+                const sub = document.getElementById(type + subcat.sub_id);
+                if (sub) {
+                    sub.checked = subcat.warranty || subcat.dock;
+                }
+            });
+        });
+    }, 200);
 };

@@ -28,6 +28,7 @@ class RepairOrder extends Model
         'user_id',
         'workshop_id',
         'send_date',
+        'finish_date',
         'status',
     ];
 
@@ -83,7 +84,7 @@ class RepairOrder extends Model
      */
     public function subcategories(): BelongsToMany
     {
-        return $this->belongsToMany(RepairSubCategory::class, 'repair_vehicle_categories', 'repair_order_id', 'repair_sub_category_id')->withPivot(['cost','dock','warranty']);
+        return $this->belongsToMany(RepairSubCategory::class, 'repair_vehicle_categories', 'repair_order_id', 'repair_sub_category_id')->withPivot(['cost', 'dock', 'warranty']);
     }
 
     /**
@@ -91,15 +92,17 @@ class RepairOrder extends Model
      */
     public function subcategoriesWithStatus(): BelongsToMany
     {
-        return $this->test()->belongsToMany(RepairSubCategory::class, 'repair_vehicle_categories', 'repair_order_id', 'repair_sub_category_id')
-
-        ->withPivot(['cost']);
+        return $this->test()
+            ->belongsToMany(RepairSubCategory::class, 'repair_vehicle_categories', 'repair_order_id', 'repair_sub_category_id')
+            ->withPivot(['cost']);
     }
 
 
-    public function repair_vehicle_categories(): BelongsToMany
+    public function repairVehicleCats(): BelongsToMany
     {
-        return $this->belongsToMany(RepairVehicleCategory::class,'repair_vehicle_categories','repair_order_id');
+        return $this
+            ->belongsToMany(RepairVehicleCategory::class, 'repair_vehicle_categories', 'repair_order_id')
+            ->withPivot(['dock', 'warranty']);
     }
 
     /**

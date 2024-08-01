@@ -20,7 +20,7 @@ class WorkshopQuoteDB
     return RepairOrder::where('workshop_id', $user->workshop_id)
       ->with([
         'vehicle.brand', 'vehicle.model', 'vehicle.color', 'vehicle.gallery', 'quotation',
-        'purchaseOrder'
+        'purchaseOrder', 'subcategories'
       ])
       ->orderByDesc('created_at')
       ->get();

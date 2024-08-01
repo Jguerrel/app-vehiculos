@@ -14,6 +14,8 @@ class PurchaseOrder extends Model
         'quotation_id',
         'repair_order_id',
         'number',
+        'order_number_warranty',
+        'order_number_expenses'
     ];
 
     /**

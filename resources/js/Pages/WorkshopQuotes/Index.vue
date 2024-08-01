@@ -16,6 +16,17 @@ const props = defineProps({
 const filter = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
+
+/**
+ * si se debe aplicar order de compra garantia
+ */
+const hasWarrantyOrder = (order) =>
+    order.subcategories?.some((sub) => sub?.pivot?.warranty);
+/**
+ * si se debe aplicar order de compra gastos
+ */
+const hasExpensesOrder = (order) =>
+    order.subcategories?.some((sub) => sub?.pivot?.dock);
 </script>
 <template>
     <Head title="Solicitudes de reparación" />
@@ -127,9 +138,28 @@ const filter = ref({
                                 field="purchase_order.number"
                                 header="Orden de compra"
                                 :sortable="true"
+                                style="min-width: 12rem"
                             >
                                 <template #body="{ data }">
-                                    {{ data.purchase_order?.number ?? "---" }}
+                                    <p class="text-xs">
+                                        Garantia:
+                                        {{
+                                            hasWarrantyOrder(data)
+                                                ? data.purchase_order
+                                                      ?.order_number_warranty
+                                                : "N/A"
+                                        }}
+                                    </p>
+                                    <p class="text-xs">
+                                        Gatos:
+                                        {{
+                                            hasExpensesOrder(data)
+                                                ? data.purchase_order
+                                                      ?.order_number_expenses
+                                                : "N/A"
+                                        }}
+                                    </p>
+                                    <!-- {{ data.purchase_order?.number ?? "---" }} -->
                                 </template>
                             </Column>
                             <Column

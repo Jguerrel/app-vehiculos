@@ -27,7 +27,9 @@ class ApproveQuotationRequest extends FormRequest
             // 'user_id' => 'required|integer',
             'quotation_id' => 'required|integer',
             'order_id' => 'required|integer',
-            'number' => 'required|string',
+            // 'number' => 'required|string',
+            'order_number_warranty' => 'nullable|string',
+            'order_number_expenses' => 'nullable|string',
         ];
     }
 
@@ -41,7 +43,9 @@ class ApproveQuotationRequest extends FormRequest
         return [
             'quotation_id.required' => 'La cotización es requerida',
             'order_id.required' => 'La orden de compra es requerida',
-            'number.required' => 'El número de orden de compra es requerido',
+            // 'number.required' => 'El número de orden de compra es requerido',
+            'order_number_warranty.string' => 'El número de orden de compra de garantia debe ser un valor valido',
+            'order_number_expenses.string' => 'El número de orden de compra de gastos debe ser un valor valido',
         ];
     }
 }

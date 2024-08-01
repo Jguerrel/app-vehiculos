@@ -21,6 +21,9 @@ import {
     clearForm,
     canFinish,
     editItems,
+    itemToSearch,
+    searchItem,
+    _categories,
 } from "../modules/repair";
 import { onMounted } from "vue";
 import ProgressBar from "@/Components/ProgressBar.vue";
@@ -41,11 +44,24 @@ onMounted(() => {
             sub.disabledDock = false;
         });
     });
+
+    _categories.value = props.categories;
 });
 </script>
 <template>
-    <div class="border-b border-gray-200 pb-3 mb-5">
+    <div
+        class="border-b border-gray-200 pb-3 mb-5 flex justify-between items-center"
+    >
         <h3 class="text-gray-900 text-2xl font-bold">Solicitar reparación</h3>
+        <div v-if="!continueRepair">
+            <input
+                type="text"
+                class="w-auto p-2 rounded-md focus:outline-none border border-gray-400"
+                placeholder="Buscar item.."
+                v-model="itemToSearch"
+                @input="searchItem(categories)"
+            />
+        </div>
     </div>
     <form @submit.prevent="saveRepair">
         <div class="flex flex-col gap-5">
@@ -54,7 +70,7 @@ onMounted(() => {
                 <div class="mx-auto w-full drop-shadow rounded-md">
                     <details
                         class="bg-gray-200 open:bg-gray-800 open:text-gray-50 duration-300"
-                        v-for="category in categories"
+                        v-for="category in _categories"
                         :key="category.id"
                     >
                         <summary

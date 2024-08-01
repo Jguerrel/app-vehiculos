@@ -131,11 +131,12 @@ class WorkshopQuoteFactory
       $order->purchaseOrder()->create([
         'user_id' => $user->id,
         'quotation_id' => $data['quotation_id'],
-        'number' => $data['number'],
+        'order_number_warranty' => $data['order_number_warranty'],
+        'order_number_expenses' => $data['order_number_expenses'],
       ]);
 
       // notificar a los usuarios de ese taller
-      $this->notifyUsersNewPurchaseOrderHasBeenCreated($order);
+      // $this->notifyUsersNewPurchaseOrderHasBeenCreated($order);
 
       return true;
     });
@@ -210,7 +211,10 @@ class WorkshopQuoteFactory
       // actualizar todos los estados
       foreach ($orders as $order) {
         $order = RepairOrder::find($order['id']);
-        $order->update(['status' => StatusRepairOrderEnum::FINALIZED]);
+        $order->update([
+          'status' => StatusRepairOrderEnum::FINALIZED,
+          'finish_date' => now(),
+        ]);
       }
 
       // actualizar el estado del vehiculo
