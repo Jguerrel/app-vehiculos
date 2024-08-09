@@ -24,7 +24,7 @@ class AdditionalExpenseAccountController extends Controller
      */
     public function index(): Response
     {
-        return Inertia::render('AdditionalExpenseAccount/Index', [
+        return Inertia::render('ExpenseAccount/Index', [
             'data' => $this->factory->getAll()
         ]);
     }
