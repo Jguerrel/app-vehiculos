@@ -4,9 +4,10 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
+import Swal from "sweetalert2";
 import { useForm } from "@inertiajs/inertia-vue3";
 import { manageError } from "@/Utils/Common/common";
-import { watch, ref } from "vue";
+import { watch, ref, computed } from "vue";
 
 const props = defineProps({
     show: {
@@ -25,6 +26,10 @@ const props = defineProps({
         type: Array,
         default: [],
     },
+    suppliers: {
+        type: Array,
+        default: [],
+    },
 });
 
 const emit = defineEmits(["close"]);
@@ -37,18 +42,52 @@ const form = useForm({
 });
 
 const orders = ref([]);
+const expenses = ref([]);
 const showSupplier = ref(false);
+const total = computed(() =>
+    expenses.value.reduce((prev, cur) => {
+        const amount = parseFloat(cur.amount);
+        return parseFloat(prev + amount);
+    }, 0)
+);
 
 /**
- * Finalizar el caso y actualizar el status del vehiculo
+ * agregar gasto adicional
  */
-// const finalizedCase = () => {
-//     form.post(route("workshop_quotes.finalizedCase"), {
-//         onError: (error) => manageError(),
-//         onSuccess: (resp) => emit("close"),
-//         onFinish: () => (loading.value = false),
-//     });
-// };
+const addAdditionalExpense = () => {
+    if (
+        !form.repair_order_id ||
+        !form.additional_expense_account_id ||
+        !form.amount
+    ) {
+        return Swal.fire({
+            icon: "error",
+            title: "Aviso",
+            text: "Debe rellenar todos los campos antes de agregar el gasto",
+        });
+    }
+
+    if (showSupplier.value && !form.supplier) {
+        return Swal.fire({
+            icon: "error",
+            title: "Aviso",
+            text: "Debe seleccionar un proveedor",
+        });
+    }
+
+    form.post(route("vehicle.add_additional_expense"), {
+        onError: (error) => console.log(error),
+        onSuccess: (resp) => {
+            emit("close");
+
+            Swal.fire({
+                icon: "success",
+                title: "Gasto agregado",
+                text: "El gasto adicional fue agregado con éxito",
+            });
+        },
+    });
+};
 
 /**
  * Verificar la selección del gasto adicional
@@ -67,15 +106,22 @@ watch(
     () => props.show,
     (value) => {
         if (value) {
-            console.log(props.vehicle);
+            expenses.value = [];
             orders.value = props.vehicle.repair_orders;
+            orders.value.forEach((order) => {
+                order.additional_expenses.forEach((exp) => {
+                    if (exp) {
+                        expenses.value.push(exp);
+                    }
+                });
+            });
         }
     }
 );
 </script>
 <template>
     <Modal :show="show" :max-width="maxWidth">
-        <div class="p-4">
+        <div class="p-4 overflow-y-auto h-[460px] md:h-full">
             <header class="flex justify-between items-center pb-3">
                 <h3 class="font-semibold text-xl">Gastos adicionales</h3>
                 <PrimaryButton
@@ -96,94 +142,150 @@ watch(
                             </span>
                         </h5>
                     </div>
-                    <div class="flex flex-col py-2">
-                        <InputLabel
-                            for="order"
-                            value="Seleccione una order de reparación"
-                        />
-                        <select
-                            v-model="form.repair_order_id"
-                            id="order"
-                            required
-                            class="rounded"
-                        >
-                            <option
-                                :value="order.id"
-                                v-for="order in orders"
-                                :key="order.id"
+                    <article class="">
+                        <div class="flex justify-between w-full gap-5">
+                            <div class="flex flex-col py-2 w-full">
+                                <InputLabel
+                                    for="order"
+                                    value="Seleccione una order de reparación"
+                                />
+                                <select
+                                    v-model="form.repair_order_id"
+                                    id="order"
+                                    required
+                                    class="rounded border border-gray-300 w-full"
+                                >
+                                    <option
+                                        :value="order.id"
+                                        v-for="order in orders"
+                                        :key="order.id"
+                                    >
+                                        {{
+                                            "000" +
+                                            order.id +
+                                            " - " +
+                                            order.workshop?.name
+                                        }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col py-2 w-full">
+                                <InputLabel
+                                    for="expense"
+                                    value="Seleccione gasto adicional"
+                                />
+                                <select
+                                    v-model="form.additional_expense_account_id"
+                                    id="expense"
+                                    required
+                                    class="rounded border border-gray-300 w-full"
+                                    @change="verifyExpense"
+                                >
+                                    <option
+                                        :value="expense.id"
+                                        v-for="expense in additionalExpenses"
+                                        :key="expense.id"
+                                    >
+                                        {{
+                                            expense.account_number +
+                                            " - " +
+                                            expense.account_name
+                                        }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between w-full gap-5">
+                            <div class="flex flex-col py-2 w-full">
+                                <InputLabel for="amount" value="Monto" />
+                                <TextInput
+                                    id="amount"
+                                    type="number"
+                                    class="block w-full"
+                                    v-model="form.amount"
+                                    required
+                                />
+                                <InputError
+                                    class="mt-2"
+                                    :message="form.errors.amount"
+                                />
+                            </div>
+                            <div
+                                class="flex flex-col py-2 w-full"
+                                v-if="showSupplier"
                             >
-                                {{
-                                    "000" +
-                                    order.id +
-                                    " - " +
-                                    order.workshop?.name
-                                }}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="flex flex-col py-2">
-                        <InputLabel
-                            for="expense"
-                            value="Agregar gasto adicional"
-                        />
-                        <select
-                            v-model="form.additional_expense_account_id"
-                            id="expense"
-                            required
-                            class="rounded"
-                            @change="verifyExpense"
-                        >
-                            <option
-                                :value="expense.id"
-                                v-for="expense in additionalExpenses"
-                                :key="expense.id"
+                                <InputLabel for="supplier" value="Proveedor" />
+                                <select
+                                    v-model="form.supplier"
+                                    id="supplier"
+                                    required
+                                    class="rounded border border-gray-300 w-full"
+                                >
+                                    <option
+                                        :value="sup.val"
+                                        v-for="sup in suppliers"
+                                        :key="sup.val"
+                                    >
+                                        {{ sup.name }}
+                                    </option>
+                                </select>
+                                <InputError
+                                    class="mt-2"
+                                    :message="form.errors.supplier"
+                                />
+                            </div>
+                        </div>
+                        <div class="flex justify-end py-2">
+                            <PrimaryButton
+                                @click.stop="addAdditionalExpense"
+                                type="button"
+                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-800 hover:bg-purple-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-900 transition ease-in-out duration-150 active:bg-purple-900"
+                                :disabled="form.processing"
                             >
-                                {{
-                                    expense.account_number +
-                                    " - " +
-                                    expense.account_name
-                                }}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="flex flex-col py-2">
-                        <InputLabel for="amount" value="Monto" />
-                        <TextInput
-                            id="amount"
-                            type="number"
-                            class="mt-1 block w-full"
-                            v-model="form.amount"
-                            required
-                        />
-                        <InputError
-                            class="mt-2"
-                            :message="form.errors.amount"
-                        />
-                    </div>
-                    <div class="flex flex-col py-2" v-if="showSupplier">
-                        <InputLabel for="supplier" value="Proveedor" />
-                        <select
-                            v-model="form.supplier"
-                            id="supplier"
-                            required
-                            class="rounded"
+                                Agregar gasto
+                            </PrimaryButton>
+                        </div>
+                    </article>
+
+                    <div
+                        class="py-2 relative overflow-x-auto shadow-md sm:rounded-lg"
+                    >
+                        <h3 class="text-lg font-semibold">Gatos</h3>
+                        <table
+                            class="w-full text-sm text-left rtl:text-right text-gray-500 table-auto"
                         >
-                            <option
-                                :value="expense.id"
-                                v-for="expense in additionalExpenses"
-                                :key="expense.id"
-                            >
-                                {{
-                                    expense.account_number +
-                                    " - " +
-                                    expense.account_name
-                                }}
-                            </option>
-                        </select>
-                        <InputError
-                            class="mt-2"
-                            :message="form.errors.supplier"
-                        />
+                            <thead class="text-gray-700 uppercase bg-gray-100">
+                                <th class="p-1">Orden de reparación</th>
+                                <th class="p-1">Gasto adicional</th>
+                                <th class="p-1">Monto</th>
+                                <th class="p-1">Proveedor</th>
+                                <th class="p-1">Fecha</th>
+                            </thead>
+                            <tbody>
+                                <tr v-for="exp in expenses" :key="exp.id">
+                                    <td class="p-1">
+                                        {{ exp.order_name }}
+                                    </td>
+                                    <td class="p-1">
+                                        {{ exp.expense_name }}
+                                    </td>
+                                    <td class="p-1">$ {{ exp.amount }}</td>
+                                    <td class="p-1">
+                                        {{ exp.supplier_name }}
+                                    </td>
+                                    <td class="p-1">
+                                        {{ exp.created_at_formatted }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="font-semibold text-gray-900">
+                                    <th class="p-1">Total</th>
+                                    <td class="p-1"></td>
+                                    <td class="p-1">$ {{ total }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </section>
             </main>
@@ -191,16 +293,10 @@ watch(
                 <PrimaryButton
                     @click="$emit('close')"
                     type="button"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-400 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition ease-in-out duration-150"
+                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-gray-800 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition ease-in-out duration-150"
+                    :disabled="form.processing"
                 >
                     Cerrar
-                </PrimaryButton>
-                <PrimaryButton
-                    @click.stop=""
-                    type="button"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-800 hover:bg-purple-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-900 transition ease-in-out duration-150"
-                >
-                    Agregar gasto
                 </PrimaryButton>
             </footer>
         </div>

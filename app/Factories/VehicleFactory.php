@@ -9,6 +9,7 @@ use App\Models\Brand;
 use App\Models\Color;
 use App\Models\ModelVehicle;
 use App\Models\RepairOrder;
+use App\Models\RepairOrderAdditionalExpense;
 use App\Models\RepairSubCategory;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -190,5 +191,20 @@ class VehicleFactory
       //$e
       // no hacer nada
     }
+  }
+
+  /**
+   * agrega un gasto adicional a una orden de reparación
+   *
+   * @param Array $data
+   * @return RepairOrderAdditionalExpense
+   */
+  public function addAdditionalExpense(array $data): RepairOrderAdditionalExpense
+  {
+    $order = RepairOrder::find($data['repair_order_id']);
+
+    abort_if(!$order, 404, 'Orden no encontrada');
+
+    return $order->additionalExpenses()->create($data);
   }
 }

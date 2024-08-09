@@ -15,7 +15,7 @@ class SupplierEnum
       case self::TEST_2:
         return 'Segundo proveedor';
       default:
-        return 'No definido';
+        return 'N/A';
     }
   }
 
@@ -25,6 +25,21 @@ class SupplierEnum
     return [
       'test_1' => self::TEST_1,
       'test_2' => self::TEST_2,
+    ];
+  }
+
+  // array datos agrupados
+  public static function getData(): array
+  {
+    return [
+      [
+        'name' => self::getName(self::TEST_1),
+        'val' => self::TEST_1,
+      ],
+      [
+        'name' => self::getName(self::TEST_2),
+        'val' => self::TEST_2,
+      ]
     ];
   }
 }

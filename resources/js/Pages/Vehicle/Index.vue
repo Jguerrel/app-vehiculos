@@ -28,7 +28,7 @@ import {
     formatPickerDate,
 } from "./modules/index";
 
-defineProps({ vehicles: Array, additionalExpenses: Array });
+defineProps({ vehicles: Array, additionalExpenses: Array, suppliers: Array });
 </script>
 <template>
     <Head title="Listado de vehículos" />
@@ -222,6 +222,7 @@ defineProps({ vehicles: Array, additionalExpenses: Array });
             :show="openAdditionalExpensesModal"
             :vehicle="vehicle"
             :additionalExpenses="additionalExpenses"
+            :suppliers="suppliers"
             @close="openAdditionalExpensesModal = false"
         />
     </Layout>

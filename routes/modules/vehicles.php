@@ -28,4 +28,7 @@ Route::middleware(['auth', 'is_superadmin_or_recorder'])
     Route::post('store-repair', [VehicleController::class, 'storeRepair'])
       ->name('vehicle.store.repair');
 
+    // agregar gastos adicionales
+    Route::post('add-additional-expenses', [VehicleController::class, 'addAdditionalExpense'])
+      ->name('vehicle.add_additional_expense');
   });

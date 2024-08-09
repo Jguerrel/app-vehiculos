@@ -14,7 +14,9 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\DB\RepairCategoryDB;
 use App\DB\WorkshopDB;
 use App\DB\VehicleDB;
+use App\Enum\SupplierEnum;
 use App\Factories\AdditionalExpenseAccountFactory;
+use App\Http\Requests\CreateAdditionalExpenseToOrder;
 use Inertia\Response;
 use Inertia\Inertia;
 
@@ -43,6 +45,7 @@ class VehicleController extends Controller
         return Inertia::render('Vehicle/Index', [
             'vehicles' => $this->db->getVehiclesByUser(),
             'additionalExpenses' => $this->expensesFactory->getAll(),
+            'suppliers' => SupplierEnum::getData(),
         ]);
     }
 
@@ -117,5 +120,18 @@ class VehicleController extends Controller
 
         return Redirect::route('vehicle.index')
             ->with('success', 'Orden(es) generadas correctamente.');
+    }
+
+    /**
+     * Agrega un gasto adicional
+     *
+     * @param CreateAdditionalExpenseToOrder $request
+     * @return RedirectResponse
+     */
+    public function addAdditionalExpense(CreateAdditionalExpenseToOrder $request): RedirectResponse
+    {
+        $this->vehicleF->addAdditionalExpense($request->validated());
+
+        return to_route('vehicle.index');
     }
 }

@@ -54,7 +54,8 @@ class VehicleDB
         'repairOrders.purchaseOrder',
         'repairOrders.workshop',
         'repairOrders.quotation',
-        'repairOrders.subcategories'
+        'repairOrders.subcategories',
+        'repairOrders.additionalExpenses',
       ])
       ->withCount('repairOrders')
       ->orderByDesc('created_at');

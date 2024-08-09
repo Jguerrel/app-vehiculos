@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\SupplierEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -35,7 +36,12 @@ class RepairOrderAdditionalExpense extends Model
      *
      * @var array
      */
-    protected $appends = ['created_at_formatted'];
+    protected $appends = [
+        'created_at_formatted',
+        'order_name',
+        'expense_name',
+        'supplier_name',
+    ];
 
 
     /**
@@ -45,7 +51,24 @@ class RepairOrderAdditionalExpense extends Model
      */
     public function getCreatedAtFormattedAttribute(): string
     {
-        return $this->created_at?->format('d-m-Y H:i A');
+        return $this->created_at?->format('d-m-Y');
+    }
+
+    public function getOrderNameAttribute(): string
+    {
+        $id = $this->repairOrder?->id;
+        $workshop = $this->repairOrder?->workshop?->name;
+        return '000' . $id . ' - ' . $workshop;
+    }
+
+    public function getExpenseNameAttribute(): ?string
+    {
+        return $this->additionalExpense?->account_name;
+    }
+
+    public function getSupplierNameAttribute(): string
+    {
+        return SupplierEnum::getName($this->supplier);
     }
 
     /**
@@ -65,6 +88,6 @@ class RepairOrderAdditionalExpense extends Model
      */
     public function additionalExpense(): BelongsTo
     {
-        return $this->belongsTo(AdditionalExpenseAccount::class);
+        return $this->belongsTo(AdditionalExpenseAccount::class, 'additional_expense_account_id');
     }
 }
