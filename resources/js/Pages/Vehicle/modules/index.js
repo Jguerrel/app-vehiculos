@@ -36,6 +36,9 @@ export const showQuotesModal = ref(false);
  */
 export const showImagesModal = ref(false);
 
+// abrir modal de gastos adicionales
+export const openAdditionalExpensesModal = ref(false);
+
 /**
  * Datos del vehiculo
  */
@@ -57,6 +60,14 @@ export const openModalQuotes = (data) => {
 export const openModalImages = (veh) => {
     vehicle.value = veh;
     showImagesModal.value = true;
+};
+
+/**
+ * Abrir el modal de gastos adicionales
+ */
+export const openModalExpenses = (veh) => {
+    vehicle.value = veh;
+    openAdditionalExpensesModal.value = true;
 };
 
 /**

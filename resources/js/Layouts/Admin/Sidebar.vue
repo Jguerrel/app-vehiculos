@@ -94,13 +94,15 @@ const pathIcon = globalThis.$pathIcon;
                 >
                     <span class="text-[15px] ml-4 text-gray-200">Talleres</span>
                 </SideLink>
-                <!--  <SideLink
-                    :href="route('roles.index')"
-                    :active="route().current('roles.*')"
-                    :icon="'bi bi-award-fill'"
+                <SideLink
+                    :href="route('expense_account.index')"
+                    :active="route().current('expense_account.*')"
+                    :icon="'fa-solid fa-file-invoice'"
                 >
-                    <span class="text-[15px] ml-4 text-gray-200">Roles</span>
-                </SideLink> -->
+                    <span class="text-[15px] ml-4 text-gray-200">
+                        Gastos adicionales
+                    </span>
+                </SideLink>
                 <SideLink
                     :href="route('reports.reports')"
                     :active="route().current('reports.reports')"
@@ -155,67 +157,7 @@ const pathIcon = globalThis.$pathIcon;
                             Listado
                         </span>
                     </SideLink>
-                    <!-- <SideLink
-                        :href="route('vehicle.reports')"
-                        :active="route().current('vehicle.reports')"
-                        :icon="'bi bi-arrow-right-square'"
-                        class="hover:bg-blue-600"
-                    >
-                        <span class="text-[15px] ml-4 text-gray-200">
-                            Reportes
-                        </span>
-                    </SideLink> -->
                 </div>
-
-                <!-- men y submenu cotizaciones -->
-                <!-- <div
-                    class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer"
-                >
-                    <i class="fas fa-list-alt"></i>
-                    <div
-                        class="flex justify-between w-full items-center"
-                        @click="dropDownWorkshop()"
-                    >
-                        <span class="text-[15px] ml-4 text-gray-200">
-                            Cotizaciones
-                        </span>
-                        <span
-                            class="text-sm rotate-180 transition duration-700"
-                            id="arrowWorkshop"
-                        >
-                            <i class="bi bi-arrow-down-square"></i>
-                        </span>
-                    </div>
-                </div> -->
-                <!-- <div
-                    class="leading-7 text-left text-sm font-thin mt-2 w-4/5 mx-auto"
-                    id="submenuWorkshop"
-                    :class="{
-                        visible: route().current('workshop_quotes.*'),
-                        hidden: !route().current('workshop_quotes.*'),
-                    }"
-                >
-                    <SideLink
-                        :href="route('workshop.create')"
-                        :active="route().current('workshop.create')"
-                        :icon="'bi bi-arrow-right-square'"
-                        class="hover:bg-blue-600"
-                    >
-                        <span class="text-[15px] ml-4 text-gray-200">
-                            Crear
-                        </span>
-                    </SideLink>
-                    <SideLink
-                        :href="route('workshop_quotes.index')"
-                        :active="route().current('workshop_quotes.*')"
-                        :icon="'bi bi-arrow-right-square'"
-                        class="hover:bg-blue-600"
-                    >
-                        <span class="text-[15px] ml-4 text-gray-200">
-                            Listado
-                        </span>
-                    </SideLink>
-                </div> -->
 
                 <div
                     class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer"

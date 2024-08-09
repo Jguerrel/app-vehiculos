@@ -14,6 +14,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\DB\RepairCategoryDB;
 use App\DB\WorkshopDB;
 use App\DB\VehicleDB;
+use App\Factories\AdditionalExpenseAccountFactory;
 use Inertia\Response;
 use Inertia\Inertia;
 
@@ -28,6 +29,7 @@ class VehicleController extends Controller
         private VehicleDB $db,
         private RepairCategoryDB $dbCat,
         private WorkshopDB $dbShop,
+        private AdditionalExpenseAccountFactory $expensesFactory,
     ) {
     }
 
@@ -40,6 +42,7 @@ class VehicleController extends Controller
     {
         return Inertia::render('Vehicle/Index', [
             'vehicles' => $this->db->getVehiclesByUser(),
+            'additionalExpenses' => $this->expensesFactory->getAll(),
         ]);
     }
 

@@ -11,6 +11,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Contracts\Activity;
 use App\Traits\UtilsLogs;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class RepairOrder extends Model
 {
@@ -119,5 +120,13 @@ class RepairOrder extends Model
     public function purchaseOrder(): HasOne
     {
         return $this->hasOne(PurchaseOrder::class, 'repair_order_id');
+    }
+
+    /**
+     * get additional expenses
+     */
+    public function additionalExpenses(): HasMany
+    {
+        return $this->hasMany(RepairOrderAdditionalExpense::class);
     }
 }

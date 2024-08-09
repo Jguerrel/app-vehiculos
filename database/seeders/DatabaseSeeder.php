@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             RepairSubCategorySeeder::class,
             RolSeeder::class,
             UserSeeder::class,
+            AdditionalExpenseAccountSeeder::class
         ]);
     }
 }

@@ -7,6 +7,7 @@ import Toolbar from "primevue/toolbar";
 import StatusVehicle from "./components/StatusVehicle.vue";
 import QuotesModal from "./components/QuotesModal.vue";
 import ImagesModal from "./components/ImagesModal.vue";
+import AdditionalExpensesModal from "./components/AdditionalExpensesModal.vue";
 import Datepicker from "@vuepic/vue-datepicker";
 import { refreshPage } from "@/Utils/Common/common";
 import { Head, Link } from "@inertiajs/inertia-vue3";
@@ -14,9 +15,11 @@ import {
     filter,
     showQuotesModal,
     showImagesModal,
+    openAdditionalExpensesModal,
     vehicle,
     openModalQuotes,
     openModalImages,
+    openModalExpenses,
     FilterData,
     clearedData,
     form,
@@ -25,7 +28,7 @@ import {
     formatPickerDate,
 } from "./modules/index";
 
-defineProps({ vehicles: Array });
+defineProps({ vehicles: Array, additionalExpenses: Array });
 </script>
 <template>
     <Head title="Listado de vehículos" />
@@ -192,6 +195,7 @@ defineProps({ vehicles: Array });
                                         :vehicle="data"
                                         @openQuotes="openModalQuotes"
                                         @openImages="openModalImages"
+                                        @openExpenses="openModalExpenses"
                                     />
                                 </template>
                             </Column>
@@ -212,6 +216,13 @@ defineProps({ vehicles: Array });
             :show="showImagesModal"
             :vehicle="vehicle"
             @close="showImagesModal = false"
+        />
+
+        <AdditionalExpensesModal
+            :show="openAdditionalExpensesModal"
+            :vehicle="vehicle"
+            :additionalExpenses="additionalExpenses"
+            @close="openAdditionalExpensesModal = false"
         />
     </Layout>
 </template>

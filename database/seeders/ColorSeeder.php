@@ -19,9 +19,6 @@ class ColorSeeder extends Seeder
         }
 
         $data = [
-
-            // construir 333 filas con el formato ['name' => 'color'],
-            // para poder inyectar 333 filas en la tabla
             ['name' => 'ICE BLUE METALLIC   '], // 1
             ['name' => 'ICE BLUE METALLIC   '], // 2
             ['name' => 'ARCTIC BLUE PEARL   '], // 3

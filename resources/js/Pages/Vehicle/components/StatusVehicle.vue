@@ -3,6 +3,7 @@ import { Link } from "@inertiajs/inertia-vue3";
 import { computed } from "vue";
 import ButtonShowImages from "./ButtonShowImages.vue";
 import ButtonShowOrders from "./ButtonShowOrders.vue";
+import ButtonShowAdditionalExpenses from "@/Pages/Vehicle/partials/ButtonShowAdditionalExpenses.vue";
 
 const props = defineProps({ vehicle: Object });
 const id = computed(() => props.vehicle.id);
@@ -50,8 +51,11 @@ const status = computed(() => props.vehicle.status);
                 Ordenes creadas ({{ vehicle.repair_orders_count }})
             </p>
 
-            <div class="flex flex-col gap-3 w-28">
+            <div class="flex flex-col gap-3">
                 <ButtonShowOrders @click="$emit('openQuotes', vehicle)" />
+                <ButtonShowAdditionalExpenses
+                    @click="$emit('openExpenses', vehicle)"
+                />
                 <ButtonShowImages @click="$emit('openImages', vehicle)" />
             </div>
         </span>
@@ -97,8 +101,11 @@ const status = computed(() => props.vehicle.status);
                 Ordenes creadas ({{ vehicle.repair_orders_count }})
             </p>
 
-            <div class="flex flex-col gap-3 w-28">
+            <div class="flex flex-col gap-3">
                 <ButtonShowOrders @click="$emit('openQuotes', vehicle)" />
+                <ButtonShowAdditionalExpenses
+                    @click="$emit('openExpenses', vehicle)"
+                />
                 <ButtonShowImages @click="$emit('openImages', vehicle)" />
             </div>
         </span>
