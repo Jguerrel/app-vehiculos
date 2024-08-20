@@ -201,10 +201,10 @@ class VehicleFactory
    */
   public function addAdditionalExpense(array $data): RepairOrderAdditionalExpense
   {
-    $order = RepairOrder::find($data['repair_order_id']);
+    $vehicle = Vehicle::find($data['vehicle_id']);
 
-    abort_if(!$order, 404, 'Orden no encontrada');
+    abort_if(!$vehicle, 404, 'Vehiculo no encontrado');
 
-    return $order->additionalExpenses()->create($data);
+    return $vehicle->additionalExpenses()->create($data);
   }
 }

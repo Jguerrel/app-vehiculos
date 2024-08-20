@@ -35,7 +35,7 @@ const status = computed(() => props.vehicle.status);
         <!-- agregado -->
         <span v-if="status === $page.props.status.vehicle.add">
             <Link
-                class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-2 rounded md:text-sm text-xs"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-2 rounded md:text-sm text-xs min-w-full mx-auto flex items-center justify-center"
                 :href="route('vehicle.repair', id)"
             >
                 <i class="fas fa-arrow-right"></i>
@@ -53,10 +53,6 @@ const status = computed(() => props.vehicle.status);
 
             <div class="flex flex-col gap-3">
                 <ButtonShowOrders @click="$emit('openQuotes', vehicle)" />
-                <ButtonShowAdditionalExpenses
-                    @click="$emit('openExpenses', vehicle)"
-                />
-                <ButtonShowImages @click="$emit('openImages', vehicle)" />
             </div>
         </span>
 
@@ -103,10 +99,6 @@ const status = computed(() => props.vehicle.status);
 
             <div class="flex flex-col gap-3">
                 <ButtonShowOrders @click="$emit('openQuotes', vehicle)" />
-                <ButtonShowAdditionalExpenses
-                    @click="$emit('openExpenses', vehicle)"
-                />
-                <ButtonShowImages @click="$emit('openImages', vehicle)" />
             </div>
         </span>
 
@@ -114,5 +106,12 @@ const status = computed(() => props.vehicle.status);
         <span v-else-if="status === $page.props.status.vehicle.cancelled">
             Caso cancelado
         </span>
+
+        <div class="flex flex-col gap-3 mt-3">
+            <ButtonShowAdditionalExpenses
+                @click="$emit('openExpenses', vehicle)"
+            />
+            <ButtonShowImages @click="$emit('openImages', vehicle)" />
+        </div>
     </div>
 </template>

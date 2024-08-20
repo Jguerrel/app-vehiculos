@@ -11,9 +11,9 @@ class SupplierEnum
   {
     switch ($val) {
       case self::TEST_1:
-        return 'Primer proveedor';
+        return 'Macs Marine';
       case self::TEST_2:
-        return 'Segundo proveedor';
+        return 'Wallenius';
       default:
         return 'N/A';
     }

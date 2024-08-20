@@ -6,7 +6,6 @@ import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import Swal from "sweetalert2";
 import { useForm } from "@inertiajs/inertia-vue3";
-import { manageError } from "@/Utils/Common/common";
 import { watch, ref, computed } from "vue";
 
 const props = defineProps({
@@ -35,7 +34,7 @@ const props = defineProps({
 const emit = defineEmits(["close"]);
 
 const form = useForm({
-    repair_order_id: null,
+    vehicle_id: null,
     additional_expense_account_id: null,
     supplier: null,
     amount: 0,
@@ -55,11 +54,7 @@ const total = computed(() =>
  * agregar gasto adicional
  */
 const addAdditionalExpense = () => {
-    if (
-        !form.repair_order_id ||
-        !form.additional_expense_account_id ||
-        !form.amount
-    ) {
+    if (!form.additional_expense_account_id || !form.amount) {
         return Swal.fire({
             icon: "error",
             title: "Aviso",
@@ -107,14 +102,9 @@ watch(
     (value) => {
         if (value) {
             expenses.value = [];
+            form.vehicle_id = props.vehicle.id;
             orders.value = props.vehicle.repair_orders;
-            orders.value.forEach((order) => {
-                order.additional_expenses.forEach((exp) => {
-                    if (exp) {
-                        expenses.value.push(exp);
-                    }
-                });
-            });
+            expenses.value = props.vehicle.additional_expenses;
         }
     }
 );
@@ -144,31 +134,6 @@ watch(
                     </div>
                     <article class="">
                         <div class="flex justify-between w-full gap-5">
-                            <div class="flex flex-col py-2 w-full">
-                                <InputLabel
-                                    for="order"
-                                    value="Seleccione una order de reparación"
-                                />
-                                <select
-                                    v-model="form.repair_order_id"
-                                    id="order"
-                                    required
-                                    class="rounded border border-gray-300 w-full"
-                                >
-                                    <option
-                                        :value="order.id"
-                                        v-for="order in orders"
-                                        :key="order.id"
-                                    >
-                                        {{
-                                            "000" +
-                                            order.id +
-                                            " - " +
-                                            order.workshop?.name
-                                        }}
-                                    </option>
-                                </select>
-                            </div>
                             <div class="flex flex-col py-2 w-full">
                                 <InputLabel
                                     for="expense"
@@ -255,7 +220,6 @@ watch(
                             class="w-full text-sm text-left rtl:text-right text-gray-500 table-auto"
                         >
                             <thead class="text-gray-700 uppercase bg-gray-100">
-                                <th class="p-1">Orden de reparación</th>
                                 <th class="p-1">Gasto adicional</th>
                                 <th class="p-1">Monto</th>
                                 <th class="p-1">Proveedor</th>
@@ -263,11 +227,11 @@ watch(
                             </thead>
                             <tbody>
                                 <tr v-for="exp in expenses" :key="exp.id">
-                                    <td class="p-1">
+                                    <!-- <td class="p-1">
                                         {{ exp.order_name }}
-                                    </td>
+                                    </td> -->
                                     <td class="p-1">
-                                        {{ exp.expense_name }}
+                                        {{ exp.full_expense_name }}
                                     </td>
                                     <td class="p-1">$ {{ exp.amount }}</td>
                                     <td class="p-1">
@@ -281,7 +245,6 @@ watch(
                             <tfoot>
                                 <tr class="font-semibold text-gray-900">
                                     <th class="p-1">Total</th>
-                                    <td class="p-1"></td>
                                     <td class="p-1">$ {{ total }}</td>
                                 </tr>
                             </tfoot>

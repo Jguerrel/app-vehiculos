@@ -24,7 +24,8 @@ class CreateAdditionalExpenseToOrder extends FormRequest
     public function rules()
     {
         return [
-            'repair_order_id' => 'required|integer',
+            'vehicle_id' => 'required|integer',
+            'repair_order_id' => 'nullable',
             'additional_expense_account_id' => 'required|integer',
             'supplier' => 'required_if:additional_expense_account_id,1|nullable|integer',
             'amount' => 'required|numeric|max:999999999999',
@@ -34,6 +35,7 @@ class CreateAdditionalExpenseToOrder extends FormRequest
     public function attributes()
     {
         return [
+            'vehicle_id' => 'Vehiculo',
             'repair_order_id' => 'Orden de reparación',
             'additional_expense_account_id' => 'Gasto adicional',
             'supplier' => 'Proveedor',

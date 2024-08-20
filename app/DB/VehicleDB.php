@@ -14,8 +14,7 @@ class VehicleDB
   // constructor
   public function __construct(
     private Vehicle $vehicle,
-  ) {
-  }
+  ) {}
 
   /**
    * @param int $id
@@ -50,12 +49,15 @@ class VehicleDB
   {
     return $this->vehicle
       ->with([
-        'color', 'brand', 'model', 'gallery',
+        'color',
+        'brand',
+        'model',
+        'gallery',
+        'additionalExpenses',
         'repairOrders.purchaseOrder',
         'repairOrders.workshop',
         'repairOrders.quotation',
         'repairOrders.subcategories',
-        'repairOrders.additionalExpenses',
       ])
       ->withCount('repairOrders')
       ->orderByDesc('created_at');

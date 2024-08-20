@@ -28,7 +28,7 @@ class Vehicle extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->setDescriptionForEvent(fn (string $eventName) => "Vehiculo :  {$this->eventName($eventName)}")
+            ->setDescriptionForEvent(fn(string $eventName) => "Vehiculo :  {$this->eventName($eventName)}")
             ->useLogName('Vehiculo');
     }
 
@@ -90,6 +90,21 @@ class Vehicle extends Model
         return $this->hasMany(RepairOrder::class, 'vehicle_id');
     }
 
+    /**
+     * Obtener los gastos adicionales del vehiculo.
+     *
+     * @return HasMany
+     */
+    public function additionalExpenses(): HasMany
+    {
+        return $this->hasMany(RepairOrderAdditionalExpense::class, 'vehicle_id');
+    }
+
+    /**
+     * Obtener las reparaciones con status.
+     *
+     * @return HasMany
+     */
     public function repairOrdersWithStatus(): HasMany
     {
         return $this->hasMany(RepairOrder::class, 'vehicle_id')->whereIn('status', [3, 5, 6, 7]);

@@ -25,6 +25,7 @@ class RepairOrderAdditionalExpense extends Model
      */
     protected $fillable = [
         'repair_order_id',
+        'vehicle_id',
         'additional_expense_account_id',
         'supplier',
         'amount',
@@ -40,6 +41,7 @@ class RepairOrderAdditionalExpense extends Model
         'created_at_formatted',
         'order_name',
         'expense_name',
+        'full_expense_name',
         'supplier_name',
     ];
 
@@ -59,6 +61,11 @@ class RepairOrderAdditionalExpense extends Model
         $id = $this->repairOrder?->id;
         $workshop = $this->repairOrder?->workshop?->name;
         return '000' . $id . ' - ' . $workshop;
+    }
+
+    public function getFullExpenseNameAttribute(): ?string
+    {
+        return $this->additionalExpense?->account_number . ' - ' . $this->additionalExpense?->account_name;
     }
 
     public function getExpenseNameAttribute(): ?string
