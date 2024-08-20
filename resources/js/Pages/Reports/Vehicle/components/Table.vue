@@ -1,4 +1,75 @@
-<template lang="">
+<script setup>
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import { ref, onMounted, computed } from "vue";
+import { FilterMatchMode } from "primevue/api";
+import InputText from "primevue/inputtext";
+import ColumnGroup from "primevue/columngroup";
+import Row from "primevue/row";
+import ModalVehicle from "./ModalVehicle.vue";
+
+const props = defineProps({
+    vehicles: Array,
+    form: Object,
+});
+
+const dockTotal = computed(() => {
+    let total = 0;
+    for (let dock of props.vehicles) {
+        total += dock.dock;
+    }
+
+    return formatCurrency(total);
+});
+
+const warrantyTotal = computed(() => {
+    let total = 0;
+    for (let warranty of props.vehicles) {
+        total += warranty.warranty;
+    }
+
+    return formatCurrency(total);
+});
+
+const totalData = computed(() => {
+    let total = 0;
+    for (let totalAll of props.vehicles) {
+        total += totalAll.total;
+    }
+
+    return formatCurrency(total);
+});
+
+const loading1 = ref(true);
+const displayMaximizable = ref(false);
+const dataModal = ref({});
+
+const openModalVehicle = (data) => {
+    dataModal.value = { ...data };
+    displayMaximizable.value = true;
+};
+
+const closeMaximizable = () => {
+    displayMaximizable.value = false;
+};
+
+onMounted(() => {
+    loading1.value = false;
+});
+
+const formatCurrency = (value) => {
+    return value.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+    });
+};
+
+const filter = ref({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
+</script>
+
+<template>
     <DataTable
         :value="vehicles"
         :paginator="true"
@@ -160,74 +231,3 @@
         @close="closeMaximizable"
     />
 </template>
-
-<script setup>
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
-import { ref, onMounted, computed } from "vue";
-import { FilterMatchMode } from "primevue/api";
-import InputText from "primevue/inputtext";
-import ColumnGroup from "primevue/columngroup";
-import Row from "primevue/row";
-import ModalVehicle from "./ModalVehicle.vue";
-
-const props = defineProps({
-    vehicles: Array,
-    form: Object,
-});
-
-const dockTotal = computed(() => {
-    let total = 0;
-    for (let dock of props.vehicles) {
-        total += dock.dock;
-    }
-
-    return formatCurrency(total);
-});
-
-const warrantyTotal = computed(() => {
-    let total = 0;
-    for (let warranty of props.vehicles) {
-        total += warranty.warranty;
-    }
-
-    return formatCurrency(total);
-});
-
-const totalData = computed(() => {
-    let total = 0;
-    for (let totalAll of props.vehicles) {
-        total += totalAll.total;
-    }
-
-    return formatCurrency(total);
-});
-
-const loading1 = ref(true);
-const displayMaximizable = ref(false);
-const dataModal = ref({});
-
-const openModalVehicle = (data) => {
-    dataModal.value = { ...data };
-    displayMaximizable.value = true;
-};
-
-const closeMaximizable = () => {
-    displayMaximizable.value = false;
-};
-
-onMounted(() => {
-    loading1.value = false;
-});
-
-const formatCurrency = (value) => {
-    return value.toLocaleString("en-US", {
-        style: "currency",
-        currency: "USD",
-    });
-};
-
-const filter = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
-</script>

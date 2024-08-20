@@ -2,8 +2,7 @@
 @section('content')
     <br>
     <div class="w-100">
-        <div class="bg-info text-white p-2 text-uppercase"
-            style="padding-top: 1rem; padding-bottom: 1rem;">
+        <div class="bg-info text-white p-2 text-uppercase" style="padding-top: 1rem; padding-bottom: 1rem;">
             <div class="text-left col-xs-6" style="margin-top: 4px;">
                 <p>
                     <b>Reporte Vehiculos - {{ $vehicle->chassis_number }}</b>
@@ -61,9 +60,9 @@
             </div>
         </div>
     </div>
-    </div>
     <br>
     <br>
+
     <div class="w-100">
         <div class="bg-info text-white p-2 rounded text-center text-uppercase"
             style="padding-top: 1rem; padding-bottom: 1rem;padding-left: 1rem;text-align: left;">
@@ -104,7 +103,8 @@
                     @endphp
                     @forelse ($vehicle->repairOrders as $order)
                         @php
-                            $subtotal += $order->status == 2 || $order->status == 4 ? 0 : $order->quotation->subtotal ?? 0;
+                            $subtotal +=
+                                $order->status == 2 || $order->status == 4 ? 0 : $order->quotation->subtotal ?? 0;
                             $iva += $order->status == 2 || $order->status == 4 ? 0 : $order->quotation->iva ?? 0;
                             $total += $order->status == 2 || $order->status == 4 ? 0 : $order->quotation->total ?? 0;
                         @endphp
@@ -163,6 +163,68 @@
     </div>
     <br>
     <br>
+
+    <div class="w-100">
+        <div class="bg-info text-white p-2 rounded text-center text-uppercase"
+            style="padding-top: 1rem; padding-bottom: 1rem;padding-left: 1rem;text-align: left;">
+            <b>Gastos adicionales</b>
+        </div>
+        <div class="w-100">
+            <table class="table table-bordered">
+                <thead class="border-b">
+                    <tr>
+                        <th class="text-center font-bold py-3">Gasto adicional</th>
+                        <th class="text-center font-bold py-3">Monto</th>
+                        <th class="text-center font-bold py-3">Proveedor</th>
+                        <th class="text-center font-bold py-3">Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $total = 0;
+                    @endphp
+                    @forelse ($vehicle->additionalExpenses as $exp)
+                        @php
+                            $total += $exp->amount;
+                        @endphp
+                        <tr>
+                            <td class="text-center py-3 text-sm md:text-lg">
+                                {{ $exp->full_expense_name }}
+                            </td>
+                            <td class="text-center py-3 text-sm md:text-lg">
+                                $ {{ $exp->amount }}
+                            </td>
+                            <td class="text-center py-3 text-sm md:text-lg">
+                                {{ $exp->supplier_name }}
+                            </td>
+                            <td class="text-center py-3 text-sm md:text-lg">
+                                {{ $exp->created_at_formatted }}
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center py-3 text-sm md:text-lg">
+                                No hay gastos adicionales
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+                <tfoot>
+                    <tr class="font-semibold text-gray-900">
+                        <th class="text-center py-3 text-sm md:text-lg">
+                            <b>Total</b>
+                        </th>
+                        <td class="text-center py-3 text-sm md:text-lg">
+                            <b>${{ number_format($total, 2, '.', '') }}</b>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <br>
+    <br>
+
     <div class="w-100">
         <div class="bg-info text-white p-2 rounded text-center text-uppercase"
             style="padding-top: 1rem; padding-bottom: 1rem;padding-left: 1rem;text-align: left;">

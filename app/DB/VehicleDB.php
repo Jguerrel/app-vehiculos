@@ -11,6 +11,19 @@ use Illuminate\Database\Eloquent\Builder;
 class VehicleDB
 {
 
+  /**
+   * Relaciones para reportes
+   */
+  const RELATIONS_TO_REPORT = [
+    'repairOrdersWithStatus.subcategories',
+    'repairOrdersWithStatus.quotation',
+    'brand',
+    'model',
+    'gallery',
+    'user',
+    'additionalExpenses',
+  ];
+
   // constructor
   public function __construct(
     private Vehicle $vehicle,
@@ -148,10 +161,29 @@ class VehicleDB
       ->get();
   }
 
-  public function getVehiclesReportsFilter($brand = null, $model = null, $dates = null, $nro_chasis = null, $user_id = null, $status = null)
-  {
+  /**
+   * Filtrar vehiculos según parámetros
+   *
+   * @param [type] $brand       marca
+   * @param [type] $model       modelo
+   * @param [type] $dates       fechas
+   * @param [type] $nro_chasis  nro chasis
+   * @param [type] $user_id     id usuario
+   * @param [type] $status      status
+   * @return void
+   */
+  public function getVehiclesReportsFilter(
+    $brand = null,
+    $model = null,
+    $dates = null,
+    $nro_chasis = null,
+    $user_id = null,
+    $status = null
+  ) {
+
+    // data
     $vehicles = $this->vehicle
-      ->with(['repairOrdersWithStatus.subcategories', 'brand', 'model', 'gallery', 'user', 'repairOrdersWithStatus.quotation'])
+      ->with(self::RELATIONS_TO_REPORT)
       ->withCount('repairOrders')
       ->brand($brand)
       ->status($status)
@@ -193,6 +225,17 @@ class VehicleDB
             'invoice_path' => $order->quotation->invoice_path ?? null,
           ];
         }),
+        'additional_expenses' => $vehicle->additionalExpenses->map(function ($expense) {
+          return [
+            'id' => $expense->id,
+            'order_name' => $expense->order_name,
+            'expense_name' => $expense->expense_name,
+            'full_expense_name' => $expense->full_expense_name,
+            'supplier_name' => $expense->supplier_name,
+            'amount' => $expense->amount,
+            'created_at_formatted' => $expense->created_at_formatted,
+          ];
+        }),
       ];
     });
 
@@ -200,10 +243,16 @@ class VehicleDB
     return $result;
   }
 
+  /**
+   * Filtrar vehiculo por id
+   *
+   * @param [type] $id    id
+   * @return void
+   */
   public function getVehicleReportById($id)
   {
     $vehicle = $this->vehicle
-      ->with(['repairOrdersWithStatus.subcategories', 'brand', 'model', 'gallery', 'user'])
+      ->with(self::RELATIONS_TO_REPORT)
       ->withCount('repairOrders')
       ->findOrfail($id);
 

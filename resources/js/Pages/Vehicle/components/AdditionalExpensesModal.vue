@@ -51,6 +51,16 @@ const total = computed(() =>
 );
 
 /**
+ * Reset form
+ */
+const resetForm = () => {
+    form.additional_expense_account_id = null;
+    form.supplier = null;
+    form.amount = 0;
+    showSupplier.value = false;
+};
+
+/**
  * agregar gasto adicional
  */
 const addAdditionalExpense = () => {
@@ -101,6 +111,7 @@ watch(
     () => props.show,
     (value) => {
         if (value) {
+            resetForm();
             expenses.value = [];
             form.vehicle_id = props.vehicle.id;
             orders.value = props.vehicle.repair_orders;
@@ -227,9 +238,6 @@ watch(
                             </thead>
                             <tbody>
                                 <tr v-for="exp in expenses" :key="exp.id">
-                                    <!-- <td class="p-1">
-                                        {{ exp.order_name }}
-                                    </td> -->
                                     <td class="p-1">
                                         {{ exp.full_expense_name }}
                                     </td>

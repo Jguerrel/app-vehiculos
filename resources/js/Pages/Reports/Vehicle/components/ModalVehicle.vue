@@ -1,4 +1,49 @@
-<template lang="">
+<script setup>
+import Dialog from "primevue/dialog";
+import Button from "primevue/button";
+import { ref, defineEmits, computed } from "vue";
+import { pp } from "@/Utils/Common/common";
+
+const props = defineProps({
+    show: {
+        type: Boolean,
+        default: false,
+    },
+    vehicle: {
+        type: Object,
+        default: {},
+    },
+});
+
+const displayBasic = ref(false);
+const image = ref({});
+const emits = defineEmits(["close"]);
+
+const openImage = (img = null) => {
+    image.value = !img ? firstImage : img;
+    displayBasic.value = true;
+};
+
+const closeModalVehicle = () => {
+    displayBasic.value = false;
+};
+
+const imgPath = (path) => {
+    if (path) {
+        return pp.resizeImgVehicle.value + path;
+    }
+    return "/";
+};
+
+const total = computed(() =>
+    props.vehicle.additional_expenses?.reduce((prev, cur) => {
+        const amount = parseFloat(cur.amount);
+        return parseFloat(prev + amount);
+    }, 0)
+);
+</script>
+
+<template>
     <Dialog
         :header="'Vehiculo - ' + vehicle.chassis_number"
         :closable="false"
@@ -12,9 +57,9 @@
             class="flex justify-between mt-4 bg-blue-100 border-b-2 border-blue-300 p-2"
         >
             <span class="font-bold text-md uppercase">Nro Chasis</span>
-            <span class="font-medium text-md">{{
-                vehicle.chassis_number
-            }}</span>
+            <span class="font-medium text-md">
+                {{ vehicle.chassis_number }}
+            </span>
         </div>
         <div
             class="flex justify-between mt-1 bg-blue-100 border-b-2 border-blue-300 p-2"
@@ -34,10 +79,14 @@
             <span class="font-bold text-md uppercase">Color</span>
             <span class="font-medium text-md">{{ vehicle.color }}</span>
         </div>
-        <h2 class="py-4 text-3xl font-bold text-center text-black">Ordenes</h2>
+
+        <!-- ordenes -->
+        <h2 class="py-4 text-3xl font-bold text-center text-black mt-4">
+            Ordenes
+        </h2>
         <div
             class="flex justify-center items-center"
-            v-if="vehicle.repair_orders.length <= 0"
+            v-if="!vehicle.repair_orders.length"
         >
             <span>No hay solicitud de reparaciones creadas </span>
         </div>
@@ -114,7 +163,66 @@
                 </tbody>
             </table>
         </div>
-        <h2 class="py-4 text-3xl font-bold text-center text-black">Fotos</h2>
+
+        <!-- gastos adicionales -->
+        <h2 class="py-4 text-3xl font-bold text-center text-black mt-4">
+            Gastos adicionales
+        </h2>
+        <div
+            class="flex justify-center items-center"
+            v-if="!vehicle.additional_expenses.length"
+        >
+            <span>No hay gastos adicionales</span>
+        </div>
+        <div class="relative overflow-x-auto" v-else>
+            <table
+                class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+            >
+                <thead class="text-lg text-gray-700 uppercase bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">Gasto adicional</th>
+                        <th scope="col" class="px-6 py-3">Monto</th>
+                        <th scope="col" class="px-6 py-3">Proveedor</th>
+                        <th scope="col" class="px-6 py-3">Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="exp in vehicle.additional_expenses"
+                        :key="exp.id"
+                        class="bg-white border-b"
+                    >
+                        <td class="px-6 py-4 font-medium text-gray-900">
+                            {{ exp.full_expense_name }}
+                        </td>
+                        <td class="px-6 py-4 font-medium text-gray-900">
+                            $ {{ exp.amount }}
+                        </td>
+                        <td class="px-6 py-4 font-medium text-gray-900">
+                            {{ exp.supplier_name }}
+                        </td>
+                        <td class="px-6 py-4 font-medium text-gray-900">
+                            {{ exp.created_at_formatted }}
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="font-semibold text-gray-900">
+                        <th class="px-6 py-4 font-medium text-gray-900">
+                            Total
+                        </th>
+                        <td class="px-6 py-4 font-medium text-gray-900">
+                            $ {{ total }}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- fotos -->
+        <h2 class="py-4 text-3xl font-bold text-center text-black mt-4">
+            Fotos
+        </h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-2 p-1">
             <div class="w-full" v-for="photo in vehicle.photos" :key="photo.id">
                 <img
@@ -134,6 +242,8 @@
             />
         </template>
     </Dialog>
+
+    <!-- dialog para fotos -->
     <Dialog
         header="Foto"
         :modal="true"
@@ -155,41 +265,3 @@
         </template>
     </Dialog>
 </template>
-<script setup>
-import Dialog from "primevue/dialog";
-import Button from "primevue/button";
-import { ref, defineEmits } from "vue";
-import { pp } from "@/Utils/Common/common";
-
-const props = defineProps({
-    show: {
-        type: Boolean,
-        default: false,
-    },
-    vehicle: {
-        type: Object,
-        default: {},
-    },
-});
-
-const displayBasic = ref(false);
-const showModal = ref(false);
-const image = ref({});
-
-const openImage = (img = null) => {
-    image.value = !img ? firstImage : img;
-    displayBasic.value = true;
-};
-
-const closeModalVehicle = () => {
-    displayBasic.value = false;
-};
-
-const imgPath = (path) => {
-    if (path) {
-        return pp.resizeImgVehicle.value + path;
-    }
-    return "/";
-};
-const emits = defineEmits(["close"]);
-</script>

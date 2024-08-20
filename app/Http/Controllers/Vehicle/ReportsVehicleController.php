@@ -20,8 +20,7 @@ class ReportsVehicleController extends Controller
         private ColorFactory $colorF,
         private VehicleDB $dbVehicle,
         private UserFactory $userF
-    ) {
-    }
+    ) {}
 
     /**
      * Devuelve la vista principal de reportes
@@ -147,6 +146,7 @@ class ReportsVehicleController extends Controller
     {
         $vehicle = $this->dbVehicle->getVehicleReportById($id);
         $pdf = Pdf::loadView('pdf.vehicle.pdf', compact('vehicle'));
-        return $pdf->stream('vehiculo.pdf');
+        $date = date('Y-m-d-H-i-s');
+        return $pdf->stream('reporte-vehiculo-' . $date . '.pdf');
     }
 }
