@@ -80,17 +80,28 @@ const addAdditionalExpense = () => {
         });
     }
 
-    form.post(route("vehicle.add_additional_expense"), {
-        onError: (error) => console.log(error),
-        onSuccess: (resp) => {
-            emit("close");
+    Swal.fire({
+        title: "¿Estas seguro que quieres agregar el gasto adicional?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Si, estoy seguro.",
+        cancelButtonText: "No, no quiero.",
+        reverseButtons: false,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.post(route("vehicle.add_additional_expense"), {
+                onError: (error) => console.log(error),
+                onSuccess: (resp) => {
+                    emit("close");
 
-            Swal.fire({
-                icon: "success",
-                title: "Gasto agregado",
-                text: "El gasto adicional fue agregado con éxito",
+                    Swal.fire({
+                        icon: "success",
+                        title: "Gasto agregado",
+                        text: "El gasto adicional fue agregado con éxito",
+                    });
+                },
             });
-        },
+        }
     });
 };
 
