@@ -19,6 +19,7 @@ export const form = useForm({
     color_id: "",
     company: "",
     gallery: [],
+    ignore_image: false,
 });
 
 // limpiar los datos del formulario

@@ -32,8 +32,7 @@ class VehicleController extends Controller
         private RepairCategoryDB $dbCat,
         private WorkshopDB $dbShop,
         private AdditionalExpenseAccountFactory $expensesFactory,
-    ) {
-    }
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -72,6 +71,12 @@ class VehicleController extends Controller
 
         // guardar imagenes
         $this->vehicleF->saveGallery($vehicle, $request->gallery);
+
+        // flujo para redireccionar si no requiere imagenes
+        // if ($request->ignore_image) {
+        //     return to_route('vehicle.index')
+        //         ->with('success', 'Vehículo creado correctamente');
+        // }
 
         // devolver un json con el vehículo creado
         // pasar los datos del vehículo
