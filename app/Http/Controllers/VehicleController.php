@@ -10,7 +10,6 @@ use Illuminate\Http\RedirectResponse;
 use App\Factories\VehicleFactory;
 use App\Factories\ColorFactory;
 use App\Factories\BrandFactory;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\DB\RepairCategoryDB;
 use App\DB\WorkshopDB;
 use App\DB\VehicleDB;
@@ -71,12 +70,6 @@ class VehicleController extends Controller
 
         // guardar imagenes
         $this->vehicleF->saveGallery($vehicle, $request->gallery);
-
-        // flujo para redireccionar si no requiere imagenes
-        // if ($request->ignore_image) {
-        //     return to_route('vehicle.index')
-        //         ->with('success', 'Vehículo creado correctamente');
-        // }
 
         // devolver un json con el vehículo creado
         // pasar los datos del vehículo

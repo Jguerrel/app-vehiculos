@@ -109,7 +109,7 @@ const finalizedCase = () => {
 /**
  * Orden creada con éxito
  */
-const purchaseOrderSuccess = (order) => {
+const createOrderSuccess = (order) => {
     order.showPurchaseOrder = false;
     emit("close");
 };
@@ -180,7 +180,7 @@ const purchaseOrderSuccess = (order) => {
                                     </span>
                                     <SpanStatusOrder :order="order" />
                                 </p>
-                                <div v-if="order.purchase_order">
+                                <!-- <div v-if="order.purchase_order">
                                     <p class="flex justify-start gap-3">
                                         <span class="font-bold text-gray-900">
                                             Orden de compra (garantia):
@@ -203,9 +203,9 @@ const purchaseOrderSuccess = (order) => {
                                                 : "N/A"
                                         }}
                                     </p>
-                                </div>
-                                <p v-if="allowApprove(order)" class="py-2">
-                                    <button
+                                </div> -->
+                                <div v-if="allowApprove(order)" class="py-2">
+                                    <!-- <button
                                         type="button"
                                         class="inline-flex items-center text-gray-900 bg-blue-400 hover:bg-blue-800 hover:text-white px-4 py-2 rounded-md transition ease-in-out duration-150"
                                         @click.stop="
@@ -216,19 +216,15 @@ const purchaseOrderSuccess = (order) => {
                                         <span class="font-medium text-sm">
                                             ¿Aprobar cotización?
                                         </span>
-                                    </button>
+                                    </button> -->
 
                                     <InputPurchaseOrder
-                                        v-if="order.showPurchaseOrder"
                                         :order="order"
-                                        @closepurchaseorder="
-                                            order.showPurchaseOrder = false
-                                        "
-                                        @orderaddsuccess="
-                                            purchaseOrderSuccess(order)
+                                        @createOrderSuccess="
+                                            createOrderSuccess(order)
                                         "
                                     />
-                                </p>
+                                </div>
                             </div>
                             <div
                                 v-if="
@@ -250,8 +246,9 @@ const purchaseOrderSuccess = (order) => {
                                 >
                                     <span
                                         class="text-gray-900 text-xs font-semibold"
-                                        >Cotización</span
                                     >
+                                        Cotización
+                                    </span>
                                     <i class="fas fa-file-pdf text-red-600"></i>
                                 </a>
                                 <a
@@ -267,8 +264,9 @@ const purchaseOrderSuccess = (order) => {
                                 >
                                     <span
                                         class="text-white text-xs font-semibold"
-                                        >Factura</span
                                     >
+                                        Factura
+                                    </span>
                                     <i class="fas fa-file-pdf text-white"></i>
                                 </a>
                             </div>

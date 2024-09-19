@@ -5,6 +5,7 @@ namespace App\Factories;
 use App\Enum\StatusRepairOrderEnum;
 use App\Enum\StatusVehicleEnum;
 use App\Mail\NotifySupplierUserEmail;
+use App\Models\AdditionalExpenseAccount;
 use App\Models\Brand;
 use App\Models\Color;
 use App\Models\ModelVehicle;
@@ -17,6 +18,7 @@ use App\Utils\AppStorage;
 use App\Utils\IntervationImage;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 
 class VehicleFactory
@@ -202,9 +204,37 @@ class VehicleFactory
   public function addAdditionalExpense(array $data): RepairOrderAdditionalExpense
   {
     $vehicle = Vehicle::find($data['vehicle_id']);
-
+    $account = AdditionalExpenseAccount::find($data['additional_expense_account_id']);
     abort_if(!$vehicle, 404, 'Vehiculo no encontrado');
 
-    return $vehicle->additionalExpenses()->create($data);
+    $additionalExpenses = DB::transaction(function () use ($data, $vehicle, $account) {
+      $token = env('VITE_API_TOKEN');
+      $host = env('VITE_API_HOST');
+      $baseUrl = env('VITE_API_BASE_URL');
+      $info = env('VITE_API_CREATE_BINNACLE');
+      $endpoint = $host . $baseUrl . $info;
+
+      // set data
+      $bitacora = [
+        'bitacora' => [
+          [
+            'chasis' => $vehicle->chassis_number,
+            'cuenta' => $account->account_number,
+            'monto' => $data['amount'],
+            'descripcion' => $account->account_name,
+            'tipo' => 'Gastos adicionales',
+          ],
+        ],
+      ];
+
+      // send request and save in bitacora
+      $resp = Http::withToken($token)
+        ->send('PUT', $endpoint, ['body' => json_encode($bitacora)]);
+
+      // save in db
+      return $vehicle->additionalExpenses()->create($data);
+    });
+
+    return $additionalExpenses;
   }
 }

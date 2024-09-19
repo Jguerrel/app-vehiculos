@@ -9,7 +9,6 @@ import { onMounted } from "vue";
 import { useGalleryStore } from "@/Store/gallery";
 import { form, saveVehicle, searchVehicle, loading } from "../modules/create";
 import Spinner from "@/Components/Spinner.vue";
-// import InputSwitch from "primevue/inputswitch";
 
 const submitVehicle = () => {
     form.gallery = useGalleryStore().getImages();

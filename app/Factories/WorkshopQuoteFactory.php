@@ -102,7 +102,7 @@ class WorkshopQuoteFactory
         'total' => $total,
       ]);
 
-      // notificar al registrador y supervisor
+      // TODO: notificar al registrador y supervisor
       $this->notifyUsersQuotationHasBeenUpdated($order);
 
       return $updated;
@@ -135,8 +135,8 @@ class WorkshopQuoteFactory
         'order_number_expenses' => $data['order_number_expenses'],
       ]);
 
-      // notificar a los usuarios de ese taller
-      // $this->notifyUsersNewPurchaseOrderHasBeenCreated($order);
+      // TODO: notificar a los usuarios de ese taller
+      $this->notifyUsersNewPurchaseOrderHasBeenCreated($order);
 
       return true;
     });
