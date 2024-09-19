@@ -61,7 +61,7 @@ class WorkshopQuoteFactory
       // cambiar status de la orden a cotizada
       $order->update(['status' => StatusRepairOrderEnum::QUOTED]);
 
-      // notificar al registrador y supervisor
+      // Todo: notificar al registrador y supervisor
       $this->notifyUsersNewQuotationHasBeenCreated($order);
 
       return $quotation;

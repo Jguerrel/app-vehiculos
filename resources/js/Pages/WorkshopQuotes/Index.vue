@@ -159,7 +159,6 @@ const hasExpensesOrder = (order) =>
                                                 : "N/A"
                                         }}
                                     </p>
-                                    <!-- {{ data.purchase_order?.number ?? "---" }} -->
                                 </template>
                             </Column>
                             <Column

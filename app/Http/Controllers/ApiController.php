@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\StatusRepairOrderEnum;
 use App\Models\Quotation;
 use App\Models\RepairOrder;
 use App\Models\Vehicle;
@@ -98,6 +99,9 @@ class ApiController extends Controller
                         $type => $resp->json()['numordencompra']
                     ]
                 );
+
+                // aprobar la cotización
+                $order->update(['status' => StatusRepairOrderEnum::APPROVED]);
             }
 
             return $resp;

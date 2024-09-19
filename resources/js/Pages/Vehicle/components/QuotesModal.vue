@@ -180,44 +180,7 @@ const createOrderSuccess = (order) => {
                                     </span>
                                     <SpanStatusOrder :order="order" />
                                 </p>
-                                <!-- <div v-if="order.purchase_order">
-                                    <p class="flex justify-start gap-3">
-                                        <span class="font-bold text-gray-900">
-                                            Orden de compra (garantia):
-                                        </span>
-                                        {{
-                                            hasWarrantyOrder(order)
-                                                ? order.purchase_order
-                                                      ?.order_number_warranty
-                                                : "N/A"
-                                        }}
-                                    </p>
-                                    <p class="flex justify-start gap-3">
-                                        <span class="font-bold text-gray-900">
-                                            Orden de compra (gastos):
-                                        </span>
-                                        {{
-                                            hasExpensesOrder(order)
-                                                ? order.purchase_order
-                                                      ?.order_number_expenses
-                                                : "N/A"
-                                        }}
-                                    </p>
-                                </div> -->
-                                <div v-if="allowApprove(order)" class="py-2">
-                                    <!-- <button
-                                        type="button"
-                                        class="inline-flex items-center text-gray-900 bg-blue-400 hover:bg-blue-800 hover:text-white px-4 py-2 rounded-md transition ease-in-out duration-150"
-                                        @click.stop="
-                                            order.showPurchaseOrder = true
-                                        "
-                                        v-if="!order.showPurchaseOrder"
-                                    >
-                                        <span class="font-medium text-sm">
-                                            ¿Aprobar cotización?
-                                        </span>
-                                    </button> -->
-
+                                <div class="py-2" v-if="order.quotation">
                                     <InputPurchaseOrder
                                         :order="order"
                                         @createOrderSuccess="
