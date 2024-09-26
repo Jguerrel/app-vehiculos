@@ -5,7 +5,10 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import ProgressBar from "@/Components/ProgressBar.vue";
 import { Head, Link } from "@inertiajs/inertia-vue3";
-import { numberToDecimal } from "@/Utils/Common/common";
+import {
+    generateConsecutiveNumberWithDate,
+    numberToDecimal,
+} from "@/Utils/Common/common";
 import {
     saveQuote,
     form,
@@ -16,20 +19,27 @@ import {
     includeTax,
     validateFormat,
 } from "./modules/create-quote";
+import { onMounted } from "vue";
 
 const props = defineProps({
     order: Object,
 });
 
-// order_id
-form.repair_order_id = props.order.id;
+onMounted(() => {
+    // order_id
+    form.repair_order_id = props.order.id;
 
-// inyecta cost
-props.order.subcategories.forEach((sub) => {
-    form.subs.push({
-        id: sub.id,
-        name: sub.name,
-        cost: "",
+    // inyecta numero de cotización
+    form.number = generateConsecutiveNumberWithDate();
+
+    // inyecta cost
+    form.subs = [];
+    props.order.subcategories.forEach((sub) => {
+        form.subs.push({
+            id: sub.id,
+            name: sub.name,
+            cost: "",
+        });
     });
 });
 </script>

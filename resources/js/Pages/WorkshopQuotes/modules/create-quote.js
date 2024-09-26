@@ -1,6 +1,6 @@
 import { useForm } from "@inertiajs/inertia-vue3";
 import { computed, ref } from "vue";
-import { generateConsecutiveNumberWithDate, manageError } from "@/Utils/Common/common";
+import { manageError } from "@/Utils/Common/common";
 import Swal from "sweetalert2";
 
 /**
@@ -12,7 +12,7 @@ export const form = useForm({
     tax: 0,
     total: 0,
     repair_order_id: 0,
-    number: generateConsecutiveNumberWithDate(),
+    number: 0,
 });
 
 /**
