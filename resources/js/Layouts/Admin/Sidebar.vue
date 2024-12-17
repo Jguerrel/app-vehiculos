@@ -88,6 +88,13 @@ const pathIcon = globalThis.$pathIcon;
                     <span class="text-[15px] ml-4 text-gray-200">Usuarios</span>
                 </SideLink>
                 <SideLink
+                    :href="route('repairsubcategories.index')"
+                    :active="route().current('repairsubcategories.*')"
+                    :icon="'bi bi-bar-chart-steps'"
+                >
+                    <span class="text-[15px] ml-4 text-gray-200">SubCategorias</span>
+                </SideLink>
+                <SideLink
                     :href="route('workshops.index')"
                     :active="route().current('workshops.*')"
                     :icon="'fa-solid fa-screwdriver-wrench'"

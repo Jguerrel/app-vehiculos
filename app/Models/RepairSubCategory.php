@@ -33,4 +33,9 @@ class RepairSubCategory extends Model
     {
         return $this->belongsTo(RepairCategory::class, 'repair_category_id');
     }
+
+    public function repairvehiclecategory()
+    {
+        return $this->hasMany(RepairVehicleCategory::class,'repair_sub_category_id');
+    }
 }

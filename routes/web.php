@@ -54,3 +54,5 @@ require __DIR__ . '/modules/artisan.php';
 require __DIR__ . '/modules/api.php';
 
 require __DIR__ . '/modules/expense_account.php';
+
+require __DIR__ . '/modules/subcategory.php';
