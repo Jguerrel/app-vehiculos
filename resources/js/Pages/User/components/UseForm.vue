@@ -69,6 +69,17 @@ clearForm();
                 />
             </div>
             <div>
+                <InputLabel for="usercode" value="Usuario Eskema" />
+                <TextInput
+                    id="usercode"
+                    type="text"
+                    class="mt-1 block w-full border-gray-200 border"
+                    v-model="form.usercode"
+
+                />
+
+            </div>
+            <div>
                 <InputLabel for="email" value="Email" />
                 <TextInput
                     id="email"

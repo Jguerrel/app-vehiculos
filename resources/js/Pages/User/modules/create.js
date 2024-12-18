@@ -9,6 +9,7 @@ export const form = useForm({
     name: "",
     last_name: "",
     email: "",
+    usercode: "",
     dni: "",
     password: "",
     password_confirmation: "",
@@ -32,6 +33,7 @@ export const clearForm = () => {
     form.reset("name", "");
     form.reset("last_name", "");
     form.reset("email", "");
+    form.reset("usercode", "");
     form.reset("dni", "");
     form.reset("password", "");
     form.reset("password_confirmation", "");

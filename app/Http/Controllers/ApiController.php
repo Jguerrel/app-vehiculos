@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Log;
 use App\Enum\StatusRepairOrderEnum;
 use App\Models\Quotation;
 use App\Models\RepairOrder;
@@ -10,6 +10,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class ApiController extends Controller
 {
@@ -56,9 +58,10 @@ class ApiController extends Controller
     public function createPurchaseOrder(Request $request): JsonResponse
     {
         // send request
-        $resp = DB::transaction(function () use ($request) {
-            $add = env('VITE_API_CREATE_PURCHASE_ORDER');
-            $endpoint = $this->host . $this->baseUrl . $add;
+         $resp = DB::transaction(function () use ($request) {
+             $add = env('VITE_API_CREATE_PURCHASE_ORDER');
+             $endpoint = $this->host . $this->baseUrl . $add;
+             $user = User::find($request->user_id);
 
             // data
             $quotation = Quotation::find($request->quotation_id);
@@ -81,13 +84,16 @@ class ApiController extends Controller
                     "modelo" => $vehicle?->model?->name,
                     "tipo" => $request->type,
                     "monto" => floatval($quotation?->total),
+                    "usuario"=>$user->usercode,
                     "ordenesreparacionsubnivel1" => $nameItems
                 ]
             ];
 
-            // send request
-            $resp = Http::withToken($this->token)
-                ->send('PUT', $endpoint, ['body' => json_encode($data)]);
+        //     // send request
+
+
+             $resp = Http::withToken($this->token)
+               ->send('PUT', $endpoint, ['body' => json_encode($data)]);
 
             // create or update purchase order
             if ($resp->status() === 200) {
@@ -100,15 +106,14 @@ class ApiController extends Controller
                     ]
                 );
 
-                // aprobar la cotización
-                $order->update(['status' => StatusRepairOrderEnum::APPROVED]);
-            }
+               // aprobar la cotización
+               $order->update(['status' => StatusRepairOrderEnum::APPROVED]);
+           }
 
             return $resp;
-        });
+         });
 
-
-        return response()->json($resp->json(), $resp->status());
+       return response()->json($resp->json(), $resp->status());
     }
 
     /**

@@ -32,6 +32,7 @@ const form = useForm({
     name: props.user.name,
     last_name: props.user.last_name,
     email: props.user.email,
+    usercode: props.user.usercode,
     dni: props.user.dni,
     password: "",
     password_confirmation: "",
@@ -84,6 +85,20 @@ const form = useForm({
                 <InputError
                     class="mt-2"
                     :message="form.errors.dni"
+                />
+            </div>
+            <div>
+                <InputLabel for="usercode" value="Usuario Eskema" />
+                <TextInput
+                    id="usercode"
+                    type="text"
+                    class="mt-1 block w-full border-gray-200 border"
+                    v-model="form.usercode"
+
+                />
+                <InputError
+                    class="mt-2"
+                    :message="form.errors.usercode"
                 />
             </div>
             <div>

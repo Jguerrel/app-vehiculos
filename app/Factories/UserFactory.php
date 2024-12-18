@@ -12,6 +12,7 @@ class UserFactory
         'last_name' => $data['last_name'],
         'rol_id' => $data['rol_id'],
         'email' => $data['email'],
+        'usercode' => $data['usercode'],
         'dni' => $data['dni'],
         'password' => $data['password'],
         'workshop_id' => $data['workshop_id'] ?? null,
@@ -24,6 +25,7 @@ class UserFactory
     $user->last_name = $data['last_name'];
     $user->rol_id = $data['rol_id'];
     $user->email = $data['email'];
+    $user->usercode = $data['usercode'];
     $user->dni = $data['dni'];
     $user->workshop_id = $data['workshop_id'];
 

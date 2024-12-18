@@ -26,6 +26,7 @@ export const clearForm = (form) => {
     form.name = "";
     form.last_name = "";
     form.email = "";
+    form.usercode = "";
     form.dni = "";
     form.update_password = false;
 
