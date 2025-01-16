@@ -30,6 +30,7 @@ class EditUserRequest extends FormRequest
             'email' => ['required','email','unique:users,email,'.$this->user->id.',id,deleted_at,NULL'],
             'rol_id' => 'required',
             'workshop_id' => 'nullable',
+            'usercode' => 'nullable',
             'password' => 'exclude_if:update_password,false|required_if:update_password,true|confirmed|min:6',
         ];
     }

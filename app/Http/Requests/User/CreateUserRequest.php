@@ -30,6 +30,7 @@ class CreateUserRequest extends FormRequest
             'dni' => 'required|min:5|max:20|unique:users,dni,NULL,id,deleted_at,NULL',
             'rol_id' => 'required',
             //'workshop_id' => 'required|required_if:rol_id,==,4',
+            'usercode' => 'nullable',
             'password' => 'required|confirmed|min:6',
         ];
     }
